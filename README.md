@@ -1,1 +1,1 @@
-This is my Sudoku Solver with the UI redesigned using React.
+This is the React version of my Sudoku Solver. It's [hosted on Heroku](https://mikes-react-sudoku-solver.herokuapp.com).
