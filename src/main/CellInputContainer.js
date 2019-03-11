@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { CellInput } from './CellInput';
 
-export default class CellInputContainer extends Component {
+export class CellInputContainer extends Component {
   handleFocus = () => {
     this.props.cellInputRefs[this.props.cellNum].current.select();
   };

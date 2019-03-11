@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Row from './Row';
+import { Row } from './Row';
 
 export class Board extends Component {
   cellInputRefs = Array.from({ length: 81 }, () => React.createRef());

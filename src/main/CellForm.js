@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CellInputContainer from './CellInputContainer';
+import { CellInputContainer } from './CellInputContainer';
 
-export default class CellForm extends Component {
+export class CellForm extends Component {
   formRef = React.createRef();
 
   formReset = () => {

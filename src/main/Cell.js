@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CellForm from './CellForm';
+import { CellForm } from './CellForm';
 
-export default class Cell extends Component {
+export class Cell extends Component {
   cellNum = (this.props.rowNum * 9) + this.props.colNum;
 
   shouldComponentUpdate(nextProps) {

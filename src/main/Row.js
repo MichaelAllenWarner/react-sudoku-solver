@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Cell from './Cell';
+import { Cell } from './Cell';
 
-export default class Row extends Component {
+export class Row extends Component {
   render() {
     const cells = Array.from({ length: 9 }, (el, ind) =>
       <Cell
