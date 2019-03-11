@@ -26,8 +26,6 @@ export class Cell extends Component {
     return (
       <td className={`${rowClass} ${colClass}`}>
         <CellForm
-          rowNum={this.props.rowNum}
-          colNum={this.props.colNum}
           cellNum={this.cellNum}
           cellInputRefs={this.props.cellInputRefs}
           solve={this.props.solve}

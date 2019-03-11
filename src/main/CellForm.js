@@ -14,8 +14,6 @@ export class CellForm extends Component {
       <form ref={this.formRef}>
         <CellInputContainer
           cellNum={this.props.cellNum}
-          rowNum={this.props.rowNum}
-          colNum={this.props.colNum}
           cellInputRefs={this.props.cellInputRefs}
           formReset={this.formReset}
           solve={this.props.solve}

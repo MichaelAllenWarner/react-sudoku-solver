@@ -41,16 +41,18 @@ export class CellInputContainer extends Component {
     switch (event.key) {
       case 'ArrowRight':
       case 'Right': {
-        // event.preventDefault();
-        const nextCellNum = (this.props.cellNum === 80) ? 0 : this.props.cellNum + 1;
+        const nextCellNum = (this.props.cellNum === 80)
+          ? 0
+          : this.props.cellNum + 1;
         this.props.cellInputRefs[nextCellNum].current.focus();
         break;
       }
 
       case 'ArrowLeft':
       case 'Left': {
-        // event.preventDefault();
-        const prevCellNum = (this.props.cellNum === 0) ? 80 : this.props.cellNum - 1;
+        const prevCellNum = (this.props.cellNum === 0)
+          ? 80
+          : this.props.cellNum - 1;
         this.props.cellInputRefs[prevCellNum].current.focus();
         break;
       }
@@ -58,29 +60,25 @@ export class CellInputContainer extends Component {
       case 'ArrowUp':
       case 'Up': {
         event.preventDefault(); // otherwise browser increments number
-
-        // if (row !== 0) {
-        //   focusOnCell(row - 1, col);
-        // } else {
-        //   focusOnCell(8, col);
-        // }
+        const aboveCellNum = (this.props.cellNum <= 8)
+          ? this.props.cellNum + 72
+          : this.props.cellNum - 9;
+        this.props.cellInputRefs[aboveCellNum].current.focus();
         break;
       }
 
       case 'ArrowDown':
       case 'Down': {
         event.preventDefault(); // otherwise browser decrements number
-
-        // if (row !== 8) {
-        //   focusOnCell(row + 1, col);
-        // } else {
-        //   focusOnCell(0, col);
-        // }
+        const belowCellNum = (this.props.cellNum >= 72)
+          ? this.props.cellNum - 72
+          : this.props.cellNum + 9;
+        this.props.cellInputRefs[belowCellNum].current.focus();
         break;
       }
 
       case 'Enter': {
-        event.preventDefault(); // otherwise form submits / page reloads
+        event.preventDefault(); // otherwise form "submits" (page reloads)
         this.props.solve();
         break;
       }
@@ -88,7 +86,7 @@ export class CellInputContainer extends Component {
   };
 
   handleKeyUp = event => {
-    // backspace gets keyUp so that it deletes before focusing
+    // backspace gets keyUp so that it deletes before focusing on prevCell
     if (event.key === 'Backspace') {
       const prevCellNum = (this.props.cellNum === 0) ? 80 : this.props.cellNum - 1;
       this.props.cellInputRefs[prevCellNum].current.focus();
@@ -118,8 +116,6 @@ export class CellInputContainer extends Component {
         value={value}
         className={className}
         isReadOnly={isReadOnly}
-        rowNum={this.props.rowNum}
-        colNum={this.props.colNum}
         cellNum={this.props.cellNum}
         cellInputRefs={this.props.cellInputRefs}
         handleFocus={this.handleFocus}
