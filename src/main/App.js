@@ -6,7 +6,7 @@ import { BelowBoard } from './BelowBoard';
 export class App extends Component {
   state = {
     boardArray: Array.from({ length: 81 }, () => '0'),
-    solutionArray: [],
+    solutionArray: Array.from({ length: 81 }, () => 0 ),
     status: 'ready' // can be: ready, cleared, solving, solved, invalid
   };
 
@@ -35,7 +35,7 @@ export class App extends Component {
   clearBoard = () => {
     this.setState({
       boardArray: Array.from({ length: 81 }, () => '0'),
-      solutionArray: [],
+      solutionArray: Array.from({ length: 81 }, () => 0 ),
       status: 'cleared'
     });
   }

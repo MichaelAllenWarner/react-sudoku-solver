@@ -125,8 +125,8 @@ CellInputContainer.propTypes = {
   cellInputRefs: PropTypes.arrayOf(PropTypes.number).isRequired,
   updateBoardArray: PropTypes.func.isRequired,
   solve: PropTypes.func.isRequired,
-  solutionArray: PropTypes.arrayOf(PropTypes.string).isRequired,
-  boardArray: PropTypes.arrayOf(PropTypes.number).isRequired,
+  solutionArray: PropTypes.arrayOf(PropTypes.number).isRequired,
+  boardArray: PropTypes.arrayOf(PropTypes.string).isRequired,
   status: PropTypes.string.isRequired
 };
 
