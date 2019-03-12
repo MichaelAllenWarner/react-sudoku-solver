@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CellForm } from './CellForm';
+import { CellInputContainer } from './CellInputContainer';
 
 export class Cell extends Component {
   cellNum = (this.props.rowNum * 9) + this.props.colNum;
@@ -25,7 +25,7 @@ export class Cell extends Component {
   
     return (
       <td className={`${rowClass} ${colClass}`}>
-        <CellForm
+        <CellInputContainer
           cellNum={this.cellNum}
           cellInputRefs={this.props.cellInputRefs}
           solve={this.props.solve}

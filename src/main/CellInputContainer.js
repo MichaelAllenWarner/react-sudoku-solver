@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { CellInput } from './CellInput';
 
-export class CellInputContainer extends Component {
+class CellInputContainer extends Component {
   handleFocus = () => {
     this.props.cellInputRefs[this.props.cellNum].current.select();
   };
@@ -17,7 +18,6 @@ export class CellInputContainer extends Component {
 
     if (inputIsGood) {
       const formattedVal = event.target.value.trim().slice(0, 1);
-
       this.props.updateBoardArray(this.props.cellNum, formattedVal);
  
       // focus on next cell after good input
@@ -27,13 +27,9 @@ export class CellInputContainer extends Component {
     
     else {
       this.props.updateBoardArray(this.props.cellNum, '0');
- 
-      // reset containing form b/c clearing value doesn't work for <input type="number">
-      this.props.formReset();
 
-      // re-focus to avoid problems that can arise when DOM "value" !== component "value"
-      this.props.cellInputRefs[this.props.cellNum].current.blur();
-      this.props.cellInputRefs[this.props.cellNum].current.focus();
+      // clear DOM value property (not enough to clear HTML value attribute b/c type="number")
+      this.props.cellInputRefs[this.props.cellNum].current.value = '';
     }
   };
 
@@ -41,6 +37,7 @@ export class CellInputContainer extends Component {
     switch (event.key) {
       case 'ArrowRight':
       case 'Right': {
+        event.preventDefault(); // otherwise focus() doesn't work
         const nextCellNum = (this.props.cellNum === 80)
           ? 0
           : this.props.cellNum + 1;
@@ -50,6 +47,7 @@ export class CellInputContainer extends Component {
 
       case 'ArrowLeft':
       case 'Left': {
+        event.preventDefault(); // otherwise focus() doesn't work
         const prevCellNum = (this.props.cellNum === 0)
           ? 80
           : this.props.cellNum - 1;
@@ -78,7 +76,6 @@ export class CellInputContainer extends Component {
       }
 
       case 'Enter': {
-        event.preventDefault(); // otherwise form "submits" (page reloads)
         this.props.solve();
         break;
       }
@@ -94,18 +91,14 @@ export class CellInputContainer extends Component {
   };
 
   render() {
-    const solutionVal = this.props.solutionArray[this.props.cellNum];
+    const solutionVal = this.props.solutionArray[this.props.cellNum].toString();
     const boardVal = this.props.boardArray[this.props.cellNum];
 
     const value = (this.props.status === 'solved')
       ? solutionVal
-      : ( 
-        boardVal === '0'
-          ? ''
-          : boardVal
-      );
+      : (boardVal === '0' ? '' : boardVal);
 
-    const className = ((this.props.status === 'solved') && (solutionVal !== +boardVal))
+    const className = ((this.props.status === 'solved') && (solutionVal !== boardVal))
       ? 'manualInput generated'
       : 'manualInput';
     
@@ -126,3 +119,15 @@ export class CellInputContainer extends Component {
     );
   }
 }
+
+CellInputContainer.propTypes = {
+  cellNum: PropTypes.number.isRequired,
+  cellInputRefs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  updateBoardArray: PropTypes.func.isRequired,
+  solve: PropTypes.func.isRequired,
+  solutionArray: PropTypes.arrayOf(PropTypes.string).isRequired,
+  boardArray: PropTypes.arrayOf(PropTypes.number).isRequired,
+  status: PropTypes.string.isRequired
+};
+
+export { CellInputContainer };

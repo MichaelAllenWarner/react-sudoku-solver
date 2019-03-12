@@ -21,7 +21,7 @@ export class App extends Component {
     const newBoardArray = [...this.state.boardArray];
     newBoardArray[index] = cellVal;
     this.setState({
-      boardArray: newBoardArray,
+      boardArray: newBoardArray
     });
   };
 
@@ -72,19 +72,15 @@ export class App extends Component {
       <>
         <Title />
         <Board
+          {...this.state}
           solve={this.solve}
           updateBoardArray={this.updateBoardArray}
-          solutionArray={this.state.solutionArray}
-          boardArray={this.state.boardArray}
-          status={this.state.status}
         />
         <BelowBoard
+          {...this.state}
           solve={this.solve}
-          solutionArray={this.state.solutionArray}
           replaceBoardArray={this.replaceBoardArray}
           clearBoard={this.clearBoard}
-          boardArray={this.state.boardArray}
-          status={this.state.status}
         />
       </>
     );
