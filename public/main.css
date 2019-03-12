@@ -33,10 +33,6 @@ td.right{
   border-right-width: 2px;
 }
 
-td form {
-  height: 100%;
-}
-
 td input {
   height: 100%;
   width: 100%;
