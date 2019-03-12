@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export const Clear = props => (
+const Clear = props => (
   <button
     id="clear"
     onClick={props.clearBoard}
@@ -9,3 +10,10 @@ export const Clear = props => (
     Clear
   </button>
 );
+
+Clear.propTypes = {
+  clearBoard: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired
+};
+
+export { Clear };

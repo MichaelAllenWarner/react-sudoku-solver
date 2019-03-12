@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export class Solution extends Component {
+class Solution extends Component {
   render() {
     const value = (this.props.status === 'solved')
       ? this.props.solutionArray.join('')
@@ -8,11 +9,12 @@ export class Solution extends Component {
         ? 'Invalid puzzle.'
         : (this.props.status === 'solving')
           ? 'Solving ...'
-          : 'Solution string will appear here.';
+          : '';
     return (
       <div>
         <input
           id="solution"
+          placeholder="Solution string will appear here."
           value={value}
           readOnly={true}
         />
@@ -20,3 +22,10 @@ export class Solution extends Component {
     );
   }
 }
+
+Solution.propTypes = {
+  status: PropTypes.string.isRequired,
+  solutionArray: PropTypes.arrayOf(PropTypes.number).isRequired
+};
+
+export { Solution };

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export class StringEntry extends Component {
-  state = { value: '81-digit string entry (anything not 1\u20139 is a blank).' };
+class StringEntry extends Component {
+  state = { value: '' };
 
   stringEntryRef = React.createRef();
 
@@ -29,7 +30,7 @@ export class StringEntry extends Component {
 
   static getDerivedStateFromProps(props) {
     if (props.status === 'cleared') {
-      return { value: '81-digit string entry (anything not 1\u20139 is a blank).' };
+      return { value: '' };
     }
     if (props.status === 'solving') {
       return { value: props.boardArray.join('') };
@@ -37,11 +38,12 @@ export class StringEntry extends Component {
     return null;
   }
 
-  render() {     
+  render() {
     return (
       <div>
         <input
           id="stringEntry"
+          placeholder="81-digit string entry (anything not 1&ndash;9 is a blank)."
           ref={this.stringEntryRef}
           value={this.state.value}
           onInput={this.handleInput}
@@ -52,3 +54,12 @@ export class StringEntry extends Component {
     );
   }
 }
+
+StringEntry.propTypes = {
+  replaceBoardArray: PropTypes.func.isRequired,
+  solve: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired,
+  boardArray: PropTypes.arrayOf(PropTypes.string).isRequired
+};
+
+export { StringEntry };

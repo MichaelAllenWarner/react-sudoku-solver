@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import { CellInputContainer } from './CellInputContainer';
+import PropTypes from 'prop-types';
+import { CellInput } from './CellInput';
 
-export class Cell extends Component {
-  cellNum = (this.props.rowNum * 9) + this.props.colNum;
-
+class Cell extends Component {
   shouldComponentUpdate(nextProps) {
-    if (nextProps.boardArray[this.cellNum] !== this.props.boardArray[this.cellNum]) {
-      return true;
-    }
-    if (nextProps.solutionArray[this.cellNum] !== this.props.solutionArray[this.cellNum]) {
-      return true;
-    }
-    if (nextProps.status !== this.props.status) {
+    if (
+      nextProps.status !== this.props.status
+      || nextProps.boardVal !== this.props.boardVal
+      || nextProps.solutionVal !== this.props.solutionVal
+    ) {
       return true;
     }
     return false;
@@ -25,16 +22,30 @@ export class Cell extends Component {
   
     return (
       <td className={`${rowClass} ${colClass}`}>
-        <CellInputContainer
-          cellNum={this.cellNum}
+        <CellInput
+          cellNum={this.props.cellNum}
           cellInputRefs={this.props.cellInputRefs}
           solve={this.props.solve}
           updateBoardArray={this.props.updateBoardArray}
-          boardArray={this.props.boardArray}
-          solutionArray={this.props.solutionArray}
+          boardVal={this.props.boardVal}
+          solutionVal={this.props.solutionVal}
           status={this.props.status}
         />
       </td>
     );
   }
 }
+
+Cell.propTypes = {
+  status: PropTypes.string.isRequired,
+  boardVal: PropTypes.string.isRequired,
+  solutionVal: PropTypes.string.isRequired,
+  rowNum: PropTypes.number.isRequired,
+  colNum: PropTypes.number.isRequired,
+  cellNum: PropTypes.number.isRequired,
+  cellInputRefs: PropTypes.arrayOf(PropTypes.object).isRequired,
+  solve: PropTypes.func.isRequired,
+  updateBoardArray: PropTypes.func.isRequired
+};
+
+export { Cell };

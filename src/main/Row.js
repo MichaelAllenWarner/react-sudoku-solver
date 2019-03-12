@@ -1,21 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Cell } from './Cell';
 
-export class Row extends Component {
-  render() {
-    const cells = Array.from({ length: 9 }, (el, ind) =>
-      <Cell
-        key={ind.toString()}
-        rowNum={this.props.rowNum}
-        colNum={ind}
-        cellInputRefs={this.props.cellInputRefs}
-        solve={this.props.solve}
-        updateBoardArray={this.props.updateBoardArray}
-        boardArray={this.props.boardArray}
-        solutionArray={this.props.solutionArray}
-        status={this.props.status}
-      />
-    );
-    return <tr>{cells}</tr>;
-  }
-}
+const Row = props => {
+  const cells = Array.from({ length: 9 }, (_el, ind) =>
+    <Cell
+      key={ind.toString()}
+      rowNum={props.rowNum}
+      colNum={ind}
+      cellNum={(props.rowNum * 9) + ind}
+      cellInputRefs={props.cellInputRefs}
+      solve={props.solve}
+      updateBoardArray={props.updateBoardArray}
+      boardVal={props.boardArray[(props.rowNum * 9) + ind]}
+      solutionVal={props.solutionArray[(props.rowNum * 9) + ind].toString()}
+      status={props.status}
+    />
+  );
+  return <tr>{cells}</tr>;
+};
+
+Row.propTypes = {
+  status: PropTypes.string.isRequired,
+  boardArray: PropTypes.arrayOf(PropTypes.string).isRequired,
+  solutionArray: PropTypes.arrayOf(PropTypes.number).isRequired,
+  rowNum: PropTypes.number.isRequired,
+  cellInputRefs: PropTypes.arrayOf(PropTypes.object).isRequired,
+  solve: PropTypes.func.isRequired,
+  updateBoardArray: PropTypes.func.isRequired
+};
+
+export { Row };

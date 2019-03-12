@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export const Submit = props => (
+const Submit = props => (
   <button
     id="submit"
     onClick={props.solve}
@@ -9,3 +10,10 @@ export const Submit = props => (
     Submit
   </button>
 );
+
+Submit.propTypes = {
+  solve: PropTypes.func.isRequired,
+  status: PropTypes.string.isRequired
+};
+
+export { Submit };
