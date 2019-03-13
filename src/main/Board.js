@@ -6,10 +6,11 @@ const cellInputRefs = Array.from({ length: 81 }, () => React.createRef());
 
 const Board = props => {
   const rows = Array.from({ length: 9 }, (_el, ind) =>
-    <Row {...props}
+    <Row
       key={ind.toString()}
       rowNum={ind}
       cellInputRefs={cellInputRefs}
+      {...props}
     />
   );
 
