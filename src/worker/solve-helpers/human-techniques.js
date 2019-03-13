@@ -82,7 +82,7 @@ function makeUniquePossValsCellVals(cellObjArray, groupObjArray) {
       .filter(cellIsInGroup)
       .forEach(pushCellAndPossValsToGroupArrays);
 
-    const possValIsUniqueInGroup = (val, ind, arr) => arr.indexOf(val) === arr.lastIndexOf(val);
+    const possValIsUniqueInGroup = (val, _ind, arr) => arr.indexOf(val) === arr.lastIndexOf(val);
     const pushUniqueValAndItsCell = val => {
       const cellWithUniquePossVal = cellsInGroup.find(cellObj => cellObj.possVals.includes(val));
       cellAndUniqueValPairs.push([cellWithUniquePossVal, val]);

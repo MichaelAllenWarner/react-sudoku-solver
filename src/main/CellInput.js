@@ -103,8 +103,7 @@ class CellInput extends Component {
     );
     
     const isReadOnly = (
-      this.props.status === 'solving'
-      || this.props.status === 'solved'
+      this.props.status === 'solved'
       || this.props.status === 'invalid'
     );
 

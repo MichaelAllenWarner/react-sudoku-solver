@@ -1,8 +1,8 @@
 export default class Cell {
   constructor(id, val) {
     this.id = id;
-    this.val = (val) ? val : null;
-    this.possVals = (val) ? [] : Array.from({ length: 9 }, (el, ind) => ind + 1);
+    this.val = val || null;
+    this.possVals = (val) ? [] : Array.from({ length: 9 }, (_el, ind) => ind + 1);
     this.isAccountedForInGroupTakenNums = false;
   }
 

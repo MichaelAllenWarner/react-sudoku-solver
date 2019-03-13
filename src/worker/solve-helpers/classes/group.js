@@ -6,7 +6,7 @@ export default class Group {
   }
   
   checkForDuplicates() { // indicates a contradiction / invalid board
-    const numIsDuplicated = (num, ind, arr) => arr.indexOf(num) !== arr.lastIndexOf(num);
+    const numIsDuplicated = (num, _ind, arr) => arr.indexOf(num) !== arr.lastIndexOf(num);
     return this.takenNums.some(numIsDuplicated);
   }
 }

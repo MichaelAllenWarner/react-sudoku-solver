@@ -7,7 +7,6 @@ class Cell extends Component {
     if (
       nextProps.status !== this.props.status
       || nextProps.boardVal !== this.props.boardVal
-      || nextProps.solutionVal !== this.props.solutionVal
     ) {
       return true;
     }
