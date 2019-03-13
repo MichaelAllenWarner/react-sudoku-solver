@@ -31,21 +31,6 @@ class Row extends Component {
   }
 }
 
-// const Row = props => {
-//   const { rowNum, boardArray, solutionArray, ...otherProps } = props;
-//   const cells = Array.from({ length: 9 }, (_el, ind) =>
-//     <Cell
-//       key={ind.toString()}
-//       cellNum={(rowNum * 9) + ind}
-//       boardVal={boardArray[(rowNum * 9) + ind]}
-//       solutionVal={solutionArray[(rowNum * 9) + ind].toString()}
-//       {...otherProps}
-//     />
-//   );
-
-//   return <tr>{cells}</tr>;
-// };
-
 Row.propTypes = {
   rowNum: PropTypes.number.isRequired,
   boardArray: PropTypes.arrayOf(PropTypes.string).isRequired,
