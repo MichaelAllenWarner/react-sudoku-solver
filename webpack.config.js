@@ -1,8 +1,47 @@
 const path = require('path');
 
+// Bundle-specific Babel options:
+
+// ES5 version of Main bundle uses React (w/ class props) and preset-env (w/ polyfills)
+const es5MainBabelOptions = {
+  plugins: ['@babel/plugin-proposal-class-properties'],
+  presets: [
+    '@babel/preset-react',
+    ['@babel/preset-env', {
+      useBuiltIns: 'usage',
+      debug: true,
+      targets: {
+        browsers: ['IE >= 10']
+      }
+    }]
+  ]
+};
+
+// ES5 version of Worker bundle gets preset-env w/ polyfills (no React)
+const es5WorkerBabelOptions = {
+  presets: [
+    ['@babel/preset-env', {
+      useBuiltIns: 'usage',
+      debug: true,
+      targets: {
+        browsers: ['IE >= 10']
+      }
+    }]
+  ]
+};
+
+// ES6+ version of Main bundle uses React w/ class props
+const es6MainBabelOptions = {
+  plugins: ['@babel/plugin-proposal-class-properties'],
+  presets: ['@babel/preset-react']
+};
+
+// (no Babel at all for ES6+ version of Worker bundle)
+
+
 module.exports = [
 
-  // ES5 version of main bundle (Babel w/ preset-react, preset-env, and polyfills)
+  // ES5 version of Main bundle
   {
     entry: './src/main/index.js',
     output: {
@@ -13,29 +52,17 @@ module.exports = [
       rules: [
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
-            options: {
-              plugins: ['@babel/plugin-proposal-class-properties'],
-              presets: [
-                '@babel/preset-react',
-                ['@babel/preset-env', {
-                  useBuiltIns: 'usage',
-                  debug: true,
-                  targets: {
-                    browsers: ['IE >= 10']
-                  }
-                }]
-              ]
-            }
+            options: es5MainBabelOptions
           }
         }
       ]
     }
   },
 
-  // ES5 version of worker bundle (Babel w/ preset-env and polyfills):
+  // ES5 version of Worker bundle
   {
     entry: './src/worker/index.js',
     output: {
@@ -46,27 +73,17 @@ module.exports = [
       rules: [
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
-            options: {
-              presets: [
-                ['@babel/preset-env', {
-                  useBuiltIns: 'usage',
-                  debug: true,
-                  targets: {
-                    browsers: ['IE >= 10']
-                  }
-                }]
-              ]
-            }
+            options: es5WorkerBabelOptions
           }
         }
       ]
     }
   },
 
-  // ES6+ version of main bundle (Babel w/ preset-react only):
+  // ES6+ version of Main bundle
   {
     entry: './src/main/index.js',
     output: {
@@ -77,20 +94,17 @@ module.exports = [
       rules: [
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
-            options: {
-              plugins: ['@babel/plugin-proposal-class-properties'],
-              presets: ['@babel/preset-react']
-            }
+            options: es6MainBabelOptions
           }
         }
       ]
     }
   },
 
-  // ES6+ version of worker bundle (no Babel at all):
+  // ES6+ version of Worker bundle
   {
     entry: './src/worker/index.js',
     output: {
@@ -101,7 +115,7 @@ module.exports = [
       rules: [
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/
+          exclude: /node_modules/
         }
       ]
     }
