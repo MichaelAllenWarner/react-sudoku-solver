@@ -7,13 +7,11 @@ class StringEntry extends Component {
   stringEntryRef = React.createRef();
 
   handleInput = event => {
+    // convert non-number characters to 0
     const formattedString = event.target.value.replace(/[^0-9]/gi, '0');
     this.setState({ value: formattedString });
-    if (
-      formattedString.length === 81
-      && Number.isInteger(+formattedString)
-      && +formattedString >= 0
-    ) {
+
+    if (formattedString.length === 81) {
       this.props.replaceBoardArray(formattedString.split(''));
     }
   }
