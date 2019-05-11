@@ -67,12 +67,12 @@ export class App extends Component {
 
   render() {
     const rows = Array.from({ length: 9 }, (_el, rowNum) => {
-      const cells = Array.from({ length: 9 }, (_el, cellNumInRow) => 
+      const cells = Array.from({ length: 9 }, (_el, colNum) => 
         <Cell
-          key={cellNumInRow.toString()/* index as key is ok (no IDs, order stable) */}
-          cellNum={(rowNum * 9) + cellNumInRow}
-          boardVal={this.state.boardArray[(rowNum * 9) + cellNumInRow]}
-          solutionVal={this.state.solutionArray[(rowNum * 9) + cellNumInRow].toString()}
+          key={colNum.toString() /* index as key is ok (no IDs, order stable) */ }
+          cellNum={(rowNum * 9) + colNum}
+          boardVal={this.state.boardArray[(rowNum * 9) + colNum]}
+          solutionVal={this.state.solutionArray[(rowNum * 9) + colNum].toString()}
           status={this.state.status}
           cellInputRefs={this.cellInputRefs}
           solve={this.solve}
@@ -81,7 +81,7 @@ export class App extends Component {
       );
       return (   
         <tr
-          key={rowNum.toString()/* index as key is ok (no IDs, order stable) */}
+          key={rowNum.toString() /* index as key is ok (no IDs, order stable) */ }
           rowNum={rowNum}
         >
           {cells}
