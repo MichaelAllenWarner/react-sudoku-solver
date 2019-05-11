@@ -57,6 +57,9 @@ class Cell extends Component {
       }
 
       case 'Enter': {
+        if (this.props.status === 'solving') {
+          return;
+        }
         this.props.solve();
         break;
       }
@@ -121,6 +124,7 @@ class Cell extends Component {
     const isReadOnly = (
       this.props.status === 'solved'
       || this.props.status === 'invalid'
+      || this.props.status === 'solving'
     );
 
     return (

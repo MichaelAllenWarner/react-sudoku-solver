@@ -21,9 +21,6 @@ export class App extends Component {
 
   updateBoardArray = (index, cellVal) => {
     this.setState(state => {
-      if (state.status === 'solving') {
-        return null;
-      }
       const newBoardArray = [...state.boardArray];
       newBoardArray[index] = cellVal;
       return { boardArray: newBoardArray };
@@ -33,7 +30,7 @@ export class App extends Component {
   replaceBoardArray = newBoardArray => {
     this.setState({
       boardArray: newBoardArray,
-      status: 'ready'
+      status: 'ready'        
     });
   };
 

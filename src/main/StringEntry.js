@@ -7,6 +7,10 @@ class StringEntry extends Component {
   stringEntryRef = React.createRef();
 
   handleInput = event => {
+    if (this.props.status === 'solving') {
+      return;
+    }
+
     // convert non-number characters to 0
     const formattedString = event.target.value.replace(/[^0-9]/gi, '0');
     this.setState({ value: formattedString });
