@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Title } from './Title';
-import { Board } from './Board';
-import { BelowBoard } from './BelowBoard';
+import { Cell } from './Cell';
+import { Submit } from './Submit';
+import { Clear } from './Clear';
+import { StringEntry } from './StringEntry';
+import { Solution } from './Solution';
 
 export class App extends Component {
   state = {
@@ -10,21 +12,21 @@ export class App extends Component {
     status: 'ready' // can be: ready, cleared, solving, solved, invalid
   };
 
+  cellInputRefs = Array.from({ length: 81 }, () => React.createRef());
+
   solve = () => {
     this.worker.postMessage(this.state.boardArray.join(''));
-    this.setState({
-      status: 'solving'
-    });
+    this.setState({ status: 'solving' });
   };
 
   updateBoardArray = (index, cellVal) => {
-    if (this.state.status === 'solving') {
-      return;
-    }
-    const newBoardArray = [...this.state.boardArray];
-    newBoardArray[index] = cellVal;
-    this.setState({
-      boardArray: newBoardArray
+    this.setState(state => {
+      if (state.status === 'solving') {
+        return null;
+      }
+      const newBoardArray = [...state.boardArray];
+      newBoardArray[index] = cellVal;
+      return { boardArray: newBoardArray };
     });
   };
 
@@ -44,9 +46,7 @@ export class App extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.status === 'cleared') {
-      this.setState({ status: 'ready' });
-    }
+    this.setState(state => (state.status === 'cleared') ? { status: 'ready' } : null);
   }
 
   componentDidMount() {
@@ -63,28 +63,61 @@ export class App extends Component {
           status: 'solved'
         });
       } else {
-        this.setState({
-          status: 'invalid'
-        });
+        this.setState({ status: 'invalid' });
       }
     });
   }
 
   render() {
-    return (
-      <>
-        <Title />
-        <Board
-          {...this.state}
+    const rows = Array.from({ length: 9 }, (_el, rowNum) => {
+      const cells = Array.from({ length: 9 }, (_el, cellNumInRow) => 
+        <Cell
+          key={cellNumInRow.toString()/* any alternative? */}
+          cellNum={(rowNum * 9) + cellNumInRow}
+          boardVal={this.state.boardArray[(rowNum * 9) + cellNumInRow]}
+          solutionVal={this.state.solutionArray[(rowNum * 9) + cellNumInRow].toString()}
+          status={this.state.status}
+          cellInputRefs={this.cellInputRefs}
           solve={this.solve}
           updateBoardArray={this.updateBoardArray}
         />
-        <BelowBoard
-          {...this.state}
-          solve={this.solve}
-          replaceBoardArray={this.replaceBoardArray}
-          clearBoard={this.clearBoard}
-        />
+      );
+      return (   
+        <tr
+          key={rowNum.toString()}
+          rowNum={rowNum}
+        >
+          {cells}
+        </tr>
+      );
+    });
+
+    return (
+      <>
+        <h1>Mike’s Sudoku Solver</h1>
+        <table>{rows}</table>
+        <div id="divBelowBoard">
+          <div id="buttons">
+            <Submit
+              solve={this.solve}
+              status={this.state.status}
+            />
+            <Clear
+              clearBoard={this.clearBoard}
+              status={this.state.status}
+            />
+          </div>
+          <StringEntry
+            solve={this.solve}
+            replaceBoardArray={this.replaceBoardArray}
+            boardArray={this.state.boardArray}
+            status={this.state.status}
+          />
+          <Solution
+            solutionArray={this.state.solutionArray}
+            status={this.state.status}
+          />
+        </div>
       </>
     );
   }
