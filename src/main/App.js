@@ -40,7 +40,7 @@ export class App extends Component {
       solutionArray: Array.from({ length: 81 }, () => 0 ),
       status: 'cleared'
     });
-  }
+  };
 
   componentDidUpdate() {
     this.setState(state => (state.status === 'cleared') ? { status: 'ready' } : null);
