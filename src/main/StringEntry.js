@@ -18,7 +18,7 @@ class StringEntry extends Component {
     if (formattedString.length === 81) {
       this.props.replaceBoardArray(formattedString.split(''));
     }
-  }
+  };
 
   handleKeyDown = event => {
     if (event.key === 'Enter') {
