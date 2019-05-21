@@ -25,7 +25,7 @@ function addValsToTakenNums(cellObjArray, groupObjArray) {
     groupObj.takenNums.push(val);
   }
 
-  return (groupAndCellValPairs.length > 0);
+  return !!groupAndCellValPairs.length;
 }
 
 function removeTakenNumsFromPossVals(cellObjArray, groupObjArray) {
@@ -61,7 +61,7 @@ function removeTakenNumsFromPossVals(cellObjArray, groupObjArray) {
     }
   }
 
-  return (cellAndTakenNumPairs.length > 0);
+  return !!cellAndTakenNumPairs.length;
 }
 
 function makeUniquePossValsCellVals(cellObjArray, groupObjArray) {
@@ -97,5 +97,5 @@ function makeUniquePossValsCellVals(cellObjArray, groupObjArray) {
     cellObj.possVals = [uniquePossVal];
   }
 
-  return (cellAndUniqueValPairs.length > 0);
+  return !!cellAndUniqueValPairs.length;
 }

@@ -7,7 +7,7 @@ import {
 } from './Cell-helpers';
 
 class Cell extends Component {
-  focusOnCell = focusOn.bind(this);
+  focusOn = focusOn.bind(this);
 
   handleFocus = () => {
     this.props.cellInputRefs[this.props.cellNum].current.select();
@@ -16,7 +16,7 @@ class Cell extends Component {
   handleKeyUp = event => {
     // backspace gets keyUp so that it deletes before focusing on prev cell
     if (event.key === 'Backspace') {
-      this.focusOnCell('prev');
+      this.focusOn('prev');
     }
   };
 
@@ -25,28 +25,28 @@ class Cell extends Component {
       case 'ArrowRight':
       case 'Right': {
         event.preventDefault(); // otherwise focus() doesn't work
-        this.focusOnCell('next');
+        this.focusOn('next');
         break;
       }
 
       case 'ArrowLeft':
       case 'Left': {
         event.preventDefault(); // otherwise focus() doesn't work
-        this.focusOnCell('prev');
+        this.focusOn('prev');
         break;
       }
 
       case 'ArrowUp':
       case 'Up': {
         event.preventDefault(); // otherwise browser increments number
-        this.focusOnCell('above');
+        this.focusOn('above');
         break;
       }
 
       case 'ArrowDown':
       case 'Down': {
         event.preventDefault(); // otherwise browser decrements number
-        this.focusOnCell('below');
+        this.focusOn('below');
         break;
       }
 
@@ -67,7 +67,7 @@ class Cell extends Component {
       if (this.props.boardVal !== formattedVal) {
         this.props.updateBoardArray(this.props.cellNum, formattedVal);
       }
-      this.focusOnCell('next');
+      this.focusOn('next');
     }
     
     else {
