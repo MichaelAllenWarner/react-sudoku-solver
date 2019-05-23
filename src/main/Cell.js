@@ -74,7 +74,7 @@ class Cell extends Component {
       if (this.props.boardVal !== '0') {
         this.props.updateBoardArray(this.props.cellNum, '0');
       }
-      // clear DOM value property (not enough to clear HTML value attribute b/c type="number")
+      // clear DOM value property (type="number" makes this necessary)
       this.props.cellInputRefs[this.props.cellNum].current.value = '';
     }
   };
