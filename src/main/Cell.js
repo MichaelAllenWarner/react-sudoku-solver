@@ -63,7 +63,7 @@ class Cell extends Component {
     const inputIsGood = validateInput(event);
 
     if (inputIsGood) {
-      const formattedVal = event.target.value.trim().slice(0, 1);
+      const formattedVal = (+event.target.value).toString();
       if (this.props.boardVal !== formattedVal) {
         this.props.updateBoardArray(this.props.cellNum, formattedVal);
       }
@@ -74,8 +74,6 @@ class Cell extends Component {
       if (this.props.boardVal !== '0') {
         this.props.updateBoardArray(this.props.cellNum, '0');
       }
-      // clear DOM value property (type="number" makes this necessary)
-      this.props.cellInputRefs[this.props.cellNum].current.value = '';
     }
   };
 
@@ -93,7 +91,7 @@ class Cell extends Component {
     const value = (this.props.status === 'solved')
       ? this.props.solutionVal
       : (this.props.boardVal === '0')
-        ? ''
+        ? ' ' // EMPTY string doesn't work! see my blog post on this: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html
         : this.props.boardVal;
 
     const valueWasGeneratedBySolver = (

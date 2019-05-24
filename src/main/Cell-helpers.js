@@ -12,9 +12,7 @@ export function focusOn(cell) {
 }
 
 export const validateInput = event => (
-  // check ValidityState b/c checking value isn't enough for <input type="number">
-  event.target.validity.valid
-  && Number.isInteger(+event.target.value)
+  Number.isInteger(+event.target.value)
   && +event.target.value >= 1
   && +event.target.value <= 9
 );

@@ -16,12 +16,4 @@ That’s probably not the best way to show off my work, so here are a few easier
 * 1...97.239....6.5...23..74..7.5.8..135.....862.84...3...4.8391..1975...256..29..4
 * ...1...6.3.....2..5.........17...........38............6.71..4.2.....3.....6..5..
 
-One thing that was tricky about building this app was the input boxes in the cells of the table. Specifically, it turns out to be somewhat complicated to manually restrict what values the user may enter into an input box with the `type="number"` attribute&mdash;and if you don’t use the `number` type, then the virtual keyboard that deploys on mobile devices will have letters rather than numbers! The *need* for manual restriction stems from the fact that browsers are inconsistent in how they handle “invalid” inputs: some browsers permit them to appear in the box (typically with a warning of some sort, like a red outline), while some browsers don’t, and I wanted to enforce the latter behavior because only integers 1 through 9 should be allowed on a Sudoku board.
-
-So it wasn’t enough to do something like `<input type="number" min="1" max="9">`. Instead, I had to use [controlled components](https://reactjs.org/docs/forms.html#controlled-components) in React, *but this wasn’t enough either*!
-
-The fundamental problem is that although some browsers allow invalid inputs to appear in the box, they do *not* allow invalid inputs as the `value` property of the corresponding `HTMLInputElement` object (which, by the way, is not the same as the HTML `value` attribute that belongs to the `<input>` tag). This makes it *impossible* to detect what invalid input the user typed in!
-
-The solution was to stop worrying about exactly what the user typed in. All that matters is whether what’s in the box is a valid input, and the `HTMLInputElement` interface includes a read-only `validity` property that tells you just that.
-
-A strange secondary problem emerged when trying to clear the box in the case of an invalid input. Without going into detail&mdash;I found that it was insufficient to set the `value` attribute of the React `<input>` component to an empty string. Using a [ref](https://reactjs.org/docs/refs-and-the-dom.html) to clear the `value` property of the `HTMLInputElement` object itself did the trick.
+While building this app, I encountered some strange React behavior (perhaps a bug?) that made it difficult to manually restrict what the user can enter into the input boxes in the cells of the board. I found a fix, and I’ve blogged about it [here](https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html).
