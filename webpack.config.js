@@ -9,6 +9,7 @@ const es5MainBabelOptions = {
     '@babel/preset-react',
     ['@babel/preset-env', {
       useBuiltIns: 'usage',
+      corejs: 3,
       debug: true,
       targets: {
         browsers: ['IE >= 10']
@@ -22,6 +23,7 @@ const es5WorkerBabelOptions = {
   presets: [
     ['@babel/preset-env', {
       useBuiltIns: 'usage',
+      corejs: 3,
       debug: true,
       targets: {
         browsers: ['IE >= 10']
