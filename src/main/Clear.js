@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const Clear = props => (
   <button
-    id="clear"
     onClick={props.clearBoard}
     disabled={props.status === 'solving'}  
   >

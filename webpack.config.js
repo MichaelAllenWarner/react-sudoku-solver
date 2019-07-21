@@ -45,7 +45,7 @@ module.exports = [
 
   // ES5 version of Main bundle
   {
-    entry: './src/main/index.js',
+    entry: './src/main/es5-index.js',
     output: {
       filename: 'es5-main.js',
       path: path.resolve(__dirname, 'public/js')

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Cell } from './Cell';
-import { Submit } from './Submit';
+import { Solve } from './Solve';
 import { Clear } from './Clear';
+import { Random } from './Random';
 import { StringEntry } from './StringEntry';
 import { Solution } from './Solution';
 
@@ -95,12 +96,17 @@ export class App extends Component {
         <table>{rows}</table>
         <div id="divBelowBoard">
           <div id="buttons">
-            <Submit
+            <Solve
               solve={this.solve}
               status={this.state.status}
             />
             <Clear
               clearBoard={this.clearBoard}
+              status={this.state.status}
+            />
+            <Random
+              clearBoard={this.clearBoard}
+              replaceBoardArray={this.replaceBoardArray}
               status={this.state.status}
             />
           </div>

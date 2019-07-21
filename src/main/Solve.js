@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Submit = props => (
+const Solve = props => (
   <button
-    id="submit"
     onClick={props.solve}
     disabled={props.status !== 'ready'}
   >
-    Submit
+    Solve
   </button>
 );
 
-Submit.propTypes = {
+Solve.propTypes = {
   solve: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired
 };
 
-export { Submit };
+export { Solve };
