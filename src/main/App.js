@@ -20,7 +20,6 @@ const cellInputRefs = Array.from({ length: 81 }, () => createRef());
 const solveButtonRef = createRef();
 
 
-
 export const App = () => {
   const [boardArray, setBoardArray] = useState(clearedBoardArray);
   const [solutionArray, setSolutionArray] = useState(clearedSolutionArray);
