@@ -1,29 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class Random extends Component {
-  handleClick = () => {
-    this.props.clearBoard();
+const Random = props => {
+  const handleClick = () => {
+    props.clearBoard();
     fetch('/api/puzzles')
       .then(res => res.json())
       .then(data => {
         const newBoard = data.board.split('');
-        this.props.replaceBoardArray(newBoard);
+        props.replaceBoardArray(newBoard);
       })
       .catch(err => alert(err));
   };
 
-  render() {
-    return (
-      <button
-        onClick={this.handleClick}
-        disabled={this.props.status === 'solving'}  
-      >
-        Random Puzzle
-      </button>
-    );
-  }
-}
+  return (
+    <button
+      onClick={handleClick}
+      disabled={props.status === 'solving'}  
+    >
+      Random Puzzle
+    </button>
+  );
+};
 
 Random.propTypes = {
   clearBoard: PropTypes.func.isRequired,

@@ -1,14 +1,14 @@
-export function focusOn(cell) {
+export function focusOn(cell, props) {
   const cellToFocusOn = (cell === 'next')
-    ? ((this.props.cellNum === 80) ? 0 : this.props.cellNum + 1)
+    ? ((props.cellNum === 80) ? 0 : props.cellNum + 1)
     : (cell === 'prev')
-      ? ((this.props.cellNum === 0) ? 80 : this.props.cellNum - 1)
+      ? ((props.cellNum === 0) ? 80 : props.cellNum - 1)
       : (cell === 'above')
-        ? ((this.props.cellNum <= 8) ? this.props.cellNum + 72 : this.props.cellNum - 9)
+        ? ((props.cellNum <= 8) ? props.cellNum + 72 : props.cellNum - 9)
         : (cell === 'below')
-          ? ((this.props.cellNum >= 72) ? this.props.cellNum - 72: this.props.cellNum + 9)
-          : this.props.cellNum;
-  this.props.cellInputRefs[cellToFocusOn].current.focus();
+          ? ((props.cellNum >= 72) ? props.cellNum - 72: props.cellNum + 9)
+          : props.cellNum;
+  props.cellInputRefs[cellToFocusOn].current.focus();
 }
 
 export const validateInput = event => (

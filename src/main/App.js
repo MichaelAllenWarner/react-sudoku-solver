@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { Cell } from './Cell';
 import { Solve } from './Solve';
 import { Clear } from './Clear';
@@ -6,122 +6,121 @@ import { Random } from './Random';
 import { StringEntry } from './StringEntry';
 import { Solution } from './Solution';
 
-export class App extends Component {
-  state = {
-    boardArray: Array.from({ length: 81 }, () => '0'),
-    solutionArray: Array.from({ length: 81 }, () => 0 ),
-    status: 'ready' // can be: ready, cleared, solving, solved, invalid
-  };
+// serve ES6+ worker if browser supports modules, ES5 worker if it doesn't
+const testScript = document.createElement('script');
+const workerFilename = ('noModule' in testScript) ? 'js/worker.js' : 'js/es5-worker.js';
+const worker = new Worker(workerFilename);
 
-  cellInputRefs = Array.from({ length: 81 }, () => React.createRef());
+// constants and refs (should only be declared once, so outside component)
+const clearedBoardArray = Array.from({ length: 81 }, () => '0');
+const clearedSolutionArray = Array.from({ length: 81 }, () => 0);
 
-  solve = () => {
-    this.worker.postMessage(this.state.boardArray.join(''));
-    this.setState({ status: 'solving' });
-  };
+const cellInputRefs = Array.from({ length: 81 }, () => createRef());
 
-  updateBoardArray = (index, cellVal) => {
-    this.setState(state => {
-      const newBoardArray = [...state.boardArray];
-      newBoardArray[index] = cellVal;
-      return { boardArray: newBoardArray };
-    });
-  };
+const solveButtonRef = createRef();
 
-  replaceBoardArray = newBoardArray => {
-    this.setState({
-      boardArray: newBoardArray,
-      status: 'ready'        
-    });
-  };
 
-  clearBoard = () => {
-    this.setState({
-      boardArray: Array.from({ length: 81 }, () => '0'),
-      solutionArray: Array.from({ length: 81 }, () => 0 ),
-      status: 'cleared'
-    });
-  };
 
-  componentDidUpdate() {
-    this.setState(state => (state.status === 'cleared') ? { status: 'ready' } : null);
-  }
+export const App = () => {
+  const [boardArray, setBoardArray] = useState(clearedBoardArray);
+  const [solutionArray, setSolutionArray] = useState(clearedSolutionArray);
+  const [status, setStatus] = useState('ready'); // can be: ready, cleared, solving, solved, invalid
 
-  componentDidMount() {
-    // serve ES6+ worker if browser supports modules, ES5 worker if it doesn't
-    const testScript = document.createElement('script');
-    const workerFilename = ('noModule' in testScript) ? 'js/worker.js' : 'js/es5-worker.js';
-
-    this.worker = new Worker(workerFilename);
-
-    this.worker.addEventListener('message', event => {
+  useEffect(() => { // on mount, set up worker listener
+    worker.addEventListener('message', event => {
       if (event.data.solutionArray) {
-        this.setState({
-          solutionArray: event.data.solutionArray,
-          status: 'solved'
-        });
+        setSolutionArray(event.data.solutionArray);
+        setStatus('solved');
       } else {
-        this.setState({ status: 'invalid' });
+        setStatus('invalid');
       }
     });
-  }
+  }, []);
 
-  render() {
-    const rows = Array.from({ length: 9 }, (_el, rowNum) => {
-      const cells = Array.from({ length: 9 }, (_el, colNum) => {
-        const cellNum = (rowNum * 9) + colNum;
-        return (
-          <Cell
-            key={cellNum.toString()}
-            cellNum={cellNum}
-            boardVal={this.state.boardArray[cellNum]}
-            solutionVal={this.state.solutionArray[cellNum].toString()}
-            status={this.state.status}
-            cellInputRefs={this.cellInputRefs}
-            solve={this.solve}
-            updateBoardArray={this.updateBoardArray}
-          />
-        );
-      });
-      return (   
-        <tr key={rowNum.toString() /* index as key is ok (no IDs, order stable) */ }>
-          {cells}
-        </tr>
+  useEffect(() => { // if board was cleared, set status to 'ready'
+    setStatus(prevStatus => (prevStatus === 'cleared') ? 'ready' : prevStatus);
+  }, [status]);
+
+  const solve = () => {
+    worker.postMessage(boardArray.join(''));
+    setStatus('solving');
+  };
+
+  const updateBoardArray = (index, cellVal) => {
+    setBoardArray(prevBoardArray => {
+      const newBoardArray = [...prevBoardArray];
+      newBoardArray[index] = cellVal;
+      return newBoardArray;
+    });
+  };
+
+  const replaceBoardArray = newBoardArray => {
+    setBoardArray(newBoardArray);
+    setStatus('ready');
+  };
+
+  const clearBoard = () => {
+    setBoardArray(clearedBoardArray);
+    setSolutionArray(clearedSolutionArray);
+    setStatus('cleared');
+  };
+  
+  const rows = Array.from({ length: 9 }, (_el, rowNum) => {
+    const cells = Array.from({ length: 9 }, (_el, colNum) => {
+      const cellNum = (rowNum * 9) + colNum;
+      return (
+        <Cell
+          key={cellNum.toString()}
+          cellNum={cellNum}
+          boardVal={boardArray[cellNum]}
+          solutionVal={solutionArray[cellNum].toString()}
+          status={status}
+          cellInputRefs={cellInputRefs}
+          solve={solve}
+          solveButtonRef={solveButtonRef}
+          updateBoardArray={updateBoardArray}
+        />
       );
     });
+    return (   
+      <tr key={rowNum.toString() /* index as key is ok (no IDs, order stable) */ }>
+        {cells}
+      </tr>
+    );
+  });
 
-    return (
-      <>
-        <h1>Mike’s Sudoku Solver</h1>
-        <table>{rows}</table>
-        <div id="divBelowBoard">
-          <div id="buttons">
-            <Solve
-              solve={this.solve}
-              status={this.state.status}
-            />
-            <Clear
-              clearBoard={this.clearBoard}
-              status={this.state.status}
-            />
-            <Random
-              clearBoard={this.clearBoard}
-              replaceBoardArray={this.replaceBoardArray}
-              status={this.state.status}
-            />
-          </div>
-          <StringEntry
-            solve={this.solve}
-            replaceBoardArray={this.replaceBoardArray}
-            boardArray={this.state.boardArray}
-            status={this.state.status}
+  return (
+    <>
+      <h1>Mike’s Sudoku Solver</h1>
+      <table>{rows}</table>
+      <div id="divBelowBoard">
+        <div id="buttons">
+          <Solve
+            solve={solve}
+            status={status}
+            solveButtonRef={solveButtonRef}
           />
-          <Solution
-            solutionArray={this.state.solutionArray}
-            status={this.state.status}
+          <Clear
+            clearBoard={clearBoard}
+            status={status}
+          />
+          <Random
+            clearBoard={clearBoard}
+            replaceBoardArray={replaceBoardArray}
+            status={status}
           />
         </div>
-      </>
-    );
-  }
-}
+        <StringEntry
+          solve={solve}
+          replaceBoardArray={replaceBoardArray}
+          boardArray={boardArray}
+          status={status}
+        />
+        <Solution
+          solutionArray={solutionArray}
+          status={status}
+        />
+      </div>
+    </>
+  );
+};

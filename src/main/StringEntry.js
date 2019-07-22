@@ -1,61 +1,61 @@
-import React, { Component } from 'react';
+import React, { useState, createRef } from 'react';
 import PropTypes from 'prop-types';
 
-class StringEntry extends Component {
-  state = { value: '' };
+const StringEntry = props => {
+  const [value, setValue] = useState('');
+  const [prevStatus, setPrevStatus] = useState(null);
 
-  stringEntryRef = React.createRef();
+  // "static getDerivedStateFromProps()" equivalent
+  if (props.status !== prevStatus) {
+    if (props.status === 'cleared') {
+      setValue('');
+    }
+    if (props.status === 'solving') {
+      setValue(props.boardArray.join(''));
+    }
+    setPrevStatus(props.status);
+  }
 
-  handleInput = event => {
-    if (this.props.status === 'solving') {
+  const stringEntryRef = createRef();
+
+  const handleInput = event => {
+    if (props.status === 'solving') {
       return;
     }
 
     // convert non-number characters to 0
     const formattedString = event.target.value.replace(/[^0-9]/gi, '0');
-    this.setState({ value: formattedString });
+    setValue(formattedString);
 
     if (formattedString.length === 81) {
-      this.props.replaceBoardArray(formattedString.split(''));
+      props.replaceBoardArray(formattedString.split(''));
     }
   };
 
-  handleKeyDown = event => {
+  const handleKeyDown = event => {
     if (event.key === 'Enter') {
-      this.props.solve();
+      props.solve();
     }
   };
 
-  handleFocus = () => {
-    this.stringEntryRef.current.select();
+  const handleFocus = () => {
+    stringEntryRef.current.select();
   };
 
-  static getDerivedStateFromProps(props) {
-    if (props.status === 'cleared') {
-      return { value: '' };
-    }
-    if (props.status === 'solving') {
-      return { value: props.boardArray.join('') };
-    }
-    return null;
-  }
-
-  render() {
-    return (
-      <div>
-        <input
-          id="stringEntry"
-          placeholder="81-digit string entry (anything not 1&ndash;9 is a blank)."
-          ref={this.stringEntryRef}
-          value={this.state.value}
-          onInput={this.handleInput}
-          onKeyDown={this.handleKeyDown}
-          onFocus={this.handleFocus}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <input
+        id="stringEntry"
+        placeholder="81-digit string entry (anything not 1&ndash;9 is a blank)."
+        ref={stringEntryRef}
+        value={value}
+        onInput={handleInput}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+      />
+    </div>
+  );
+};
 
 StringEntry.propTypes = {
   replaceBoardArray: PropTypes.func.isRequired,

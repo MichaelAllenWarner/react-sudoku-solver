@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+/* eslint-disable react/display-name */
+
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import {
   focusOn,
@@ -6,124 +8,118 @@ import {
   determineCellClass
 } from './Cell-helpers';
 
-class Cell extends Component {
-  focusOn = focusOn.bind(this);
+// 2nd parameter for memo (equivalent of shouldComponentUpdate())
+const shouldSkipUpdate = (prevProps, nextProps) => !(
+  nextProps.status !== prevProps.status
+  || nextProps.boardVal !== prevProps.boardVal
+);
 
-  handleFocus = () => {
-    this.props.cellInputRefs[this.props.cellNum].current.select();
+
+const Cell = memo(props => {
+  const handleFocus = () => {
+    props.cellInputRefs[props.cellNum].current.select();
   };
-
-  handleKeyUp = event => {
+  
+  const handleKeyUp = event => {
     // backspace gets keyUp so that it deletes before focusing on prev cell
     if (event.key === 'Backspace') {
-      this.focusOn('prev');
+      focusOn('prev', props);
     }
   };
 
-  handleKeyDown = event => {
+  const handleKeyDown = event => {
     switch (event.key) {
       case 'ArrowRight':
       case 'Right': {
         event.preventDefault(); // otherwise focus() doesn't work
-        this.focusOn('next');
+        focusOn('next', props);
         break;
       }
 
       case 'ArrowLeft':
       case 'Left': {
         event.preventDefault(); // otherwise focus() doesn't work
-        this.focusOn('prev');
+        focusOn('prev', props);
         break;
       }
 
       case 'ArrowUp':
       case 'Up': {
         event.preventDefault(); // otherwise browser increments number
-        this.focusOn('above');
+        focusOn('above', props);
         break;
       }
 
       case 'ArrowDown':
       case 'Down': {
         event.preventDefault(); // otherwise browser decrements number
-        this.focusOn('below');
+        focusOn('below', props);
         break;
       }
 
       case 'Enter': {
-        if (this.props.status !== 'solving') {
-          this.props.solve();
+        if (props.status !== 'solving') {
+          // props.solve(); not working with memo! some kind of bug, so:
+          props.solveButtonRef.current.click();
         }
         break;
       }
     }
   };
 
-  handleInput = event => {
+  const handleInput = event => {
     const inputIsGood = validateInput(event);
 
     if (inputIsGood) {
       const formattedVal = (+event.target.value).toString();
-      if (this.props.boardVal !== formattedVal) {
-        this.props.updateBoardArray(this.props.cellNum, formattedVal);
+      if (props.boardVal !== formattedVal) {
+        props.updateBoardArray(props.cellNum, formattedVal);
       }
-      this.focusOn('next');
+      focusOn('next', props);
     }
     
     else {
-      if (this.props.boardVal !== '0') {
-        this.props.updateBoardArray(this.props.cellNum, '0');
+      if (props.boardVal !== '0') {
+        props.updateBoardArray(props.cellNum, '0');
       }
     }
   };
 
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.status !== this.props.status
-      || nextProps.boardVal !== this.props.boardVal
-    ) {
-      return true;
-    }
-    return false;
-  }
+  const value = (props.status === 'solved')
+    ? props.solutionVal
+    : (props.boardVal === '0')
+      ? ' ' // EMPTY string doesn't work! see my blog post on this: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html
+      : props.boardVal;
 
-  render() {
-    const value = (this.props.status === 'solved')
-      ? this.props.solutionVal
-      : (this.props.boardVal === '0')
-        ? ' ' // EMPTY string doesn't work! see my blog post on this: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html
-        : this.props.boardVal;
+  const valueWasGeneratedBySolver = (
+    props.status === 'solved'
+    && (props.solutionVal !== props.boardVal)
+  );
+  
+  const isReadOnly = (
+    props.status === 'solved'
+    || props.status === 'invalid'
+    || props.status === 'solving'
+  );
 
-    const valueWasGeneratedBySolver = (
-      this.props.status === 'solved'
-      && (this.props.solutionVal !== this.props.boardVal)
-    );
-    
-    const isReadOnly = (
-      this.props.status === 'solved'
-      || this.props.status === 'invalid'
-      || this.props.status === 'solving'
-    );
-
-    return (
-      <td className={determineCellClass(this.props.cellNum)}>
-        <input
-          value={value}
-          className={valueWasGeneratedBySolver ? 'manualInput generated' : 'manualInput'}
-          onInput={this.handleInput}
-          onKeyDown={this.handleKeyDown}
-          onKeyUp={this.handleKeyUp}
-          onFocus={this.handleFocus}
-          ref={this.props.cellInputRefs[this.props.cellNum]}
-          readOnly={isReadOnly}
-          type="number"
-          min="1"
-          max="9"
-        />
-      </td>
-    );
-  }
-}
+  return (
+    <td className={determineCellClass(props.cellNum)}>
+      <input
+        value={value}
+        className={valueWasGeneratedBySolver ? 'manualInput generated' : 'manualInput'}
+        onInput={handleInput}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        onFocus={handleFocus}
+        ref={props.cellInputRefs[props.cellNum]}
+        readOnly={isReadOnly}
+        type="number"
+        min="1"
+        max="9"
+      />
+    </td>
+  );
+}, shouldSkipUpdate);
 
 Cell.propTypes = {
   status: PropTypes.string.isRequired,
@@ -132,6 +128,7 @@ Cell.propTypes = {
   cellNum: PropTypes.number.isRequired,
   cellInputRefs: PropTypes.arrayOf(PropTypes.object).isRequired,
   solve: PropTypes.func.isRequired,
+  solveButtonRef: PropTypes.object.isRequired,
   updateBoardArray: PropTypes.func.isRequired
 };
 
