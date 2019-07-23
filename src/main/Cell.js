@@ -88,7 +88,7 @@ const Cell = memo(props => {
   const value = (props.status === 'solved')
     ? props.solutionVal
     : (props.boardVal === '0')
-      ? ' ' // EMPTY string doesn't work! see my blog post on this: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html
+      ? ''
       : props.boardVal;
 
   const valueWasGeneratedBySolver = (
@@ -113,9 +113,7 @@ const Cell = memo(props => {
         onFocus={handleFocus}
         ref={props.cellInputRefs[props.cellNum]}
         readOnly={isReadOnly}
-        type="number"
-        min="1"
-        max="9"
+        type={'tel' /* not 'number' b/c of React bug: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html */}
       />
     </td>
   );
