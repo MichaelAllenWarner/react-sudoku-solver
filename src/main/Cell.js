@@ -1,133 +1,66 @@
-/* eslint-disable react/display-name */
-
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import {
-  focusOn,
-  validateInput,
-  determineCellClass
+  focusHandler,
+  keyUpHandler,
+  keyDownHandler,
+  inputHandler,
+  determineCellClass,
+  determineValue,
+  determineInputClass,
+  determineIfReadOnly
 } from './Cell-helpers';
 
-// 2nd parameter for memo (equivalent of shouldComponentUpdate())
-const shouldSkipUpdate = (prevProps, nextProps) => !(
-  nextProps.status !== prevProps.status
-  || nextProps.boardVal !== prevProps.boardVal
-);
-
-
-const Cell = memo(props => {
+const UnmemoizedCell = props => {
   const handleFocus = () => {
-    props.cellInputRefs[props.cellNum].current.select();
+    focusHandler(props);
   };
   
   const handleKeyUp = event => {
-    // backspace gets keyUp so that it deletes before focusing on prev cell
-    if (event.key === 'Backspace') {
-      focusOn('prev', props);
-    }
+    keyUpHandler(event, props);
   };
 
   const handleKeyDown = event => {
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'Right': {
-        event.preventDefault(); // otherwise focus() doesn't work
-        focusOn('next', props);
-        break;
-      }
-
-      case 'ArrowLeft':
-      case 'Left': {
-        event.preventDefault(); // otherwise focus() doesn't work
-        focusOn('prev', props);
-        break;
-      }
-
-      case 'ArrowUp':
-      case 'Up': {
-        event.preventDefault(); // otherwise browser increments number
-        focusOn('above', props);
-        break;
-      }
-
-      case 'ArrowDown':
-      case 'Down': {
-        event.preventDefault(); // otherwise browser decrements number
-        focusOn('below', props);
-        break;
-      }
-
-      case 'Enter': {
-        if (props.status !== 'solving') {
-          // props.solve(); not working with memo! some kind of bug, so:
-          props.solveButtonRef.current.click();
-        }
-        break;
-      }
-    }
+    keyDownHandler(event, props);
   };
 
   const handleInput = event => {
-    const inputIsGood = validateInput(event);
-
-    if (inputIsGood) {
-      const formattedVal = (+event.target.value).toString();
-      if (props.boardVal !== formattedVal) {
-        props.updateBoardArray(props.cellNum, formattedVal);
-      }
-      focusOn('next', props);
-    }
-    
-    else {
-      if (props.boardVal !== '0') {
-        props.updateBoardArray(props.cellNum, '0');
-      }
-    }
+    inputHandler(event, props);
   };
-
-  const value = (props.status === 'solved')
-    ? props.solutionVal
-    : (props.boardVal === '0')
-      ? ''
-      : props.boardVal;
-
-  const valueWasGeneratedBySolver = (
-    props.status === 'solved'
-    && (props.solutionVal !== props.boardVal)
-  );
-  
-  const isReadOnly = (
-    props.status === 'solved'
-    || props.status === 'invalid'
-    || props.status === 'solving'
-  );
 
   return (
     <td className={determineCellClass(props.cellNum)}>
       <input
-        value={value}
-        className={valueWasGeneratedBySolver ? 'manualInput generated' : 'manualInput'}
+        value={determineValue(props)}
+        className={determineInputClass(props)}
         onInput={handleInput}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         onFocus={handleFocus}
         ref={props.cellInputRefs[props.cellNum]}
-        readOnly={isReadOnly}
+        readOnly={determineIfReadOnly(props)}
         type={'tel' /* not 'number' b/c of React bug: https://michaelallenwarner.github.io/webdev/2019/05/24/restricting-user-input-on-a-number-type-input-box-in-react.html */}
       />
     </td>
   );
-}, shouldSkipUpdate);
+};
 
-Cell.propTypes = {
+UnmemoizedCell.propTypes = {
   status: PropTypes.string.isRequired,
   boardVal: PropTypes.string.isRequired,
   solutionVal: PropTypes.string.isRequired,
   cellNum: PropTypes.number.isRequired,
   cellInputRefs: PropTypes.arrayOf(PropTypes.object).isRequired,
-  solve: PropTypes.func.isRequired,
-  solveButtonRef: PropTypes.object.isRequired,
+  solveButtonRef: PropTypes.object.isRequired, // instead of solve b/c of memo bug (see keyDownHandler)
   updateBoardArray: PropTypes.func.isRequired
 };
+
+// equivalent of shouldComponentUpdate() (but inverse: should component NOT update)
+const shouldSkipUpdate = (prevProps, nextProps) => (
+  nextProps.status === prevProps.status
+  && nextProps.boardVal === prevProps.boardVal
+);
+
+const Cell = memo(UnmemoizedCell, shouldSkipUpdate);
 
 export { Cell };

@@ -1,6 +1,8 @@
 import React, { useState, createRef } from 'react';
 import PropTypes from 'prop-types';
 
+const stringEntryRef = createRef();
+
 const StringEntry = props => {
   const [value, setValue] = useState('');
   const [prevStatus, setPrevStatus] = useState(null);
@@ -15,8 +17,6 @@ const StringEntry = props => {
     }
     setPrevStatus(props.status);
   }
-
-  const stringEntryRef = createRef();
 
   const handleInput = event => {
     if (props.status === 'solving') {

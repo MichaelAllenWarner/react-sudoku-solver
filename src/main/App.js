@@ -5,44 +5,46 @@ import { Clear } from './Clear';
 import { Random } from './Random';
 import { StringEntry } from './StringEntry';
 import { Solution } from './Solution';
+import { worker } from './worker';
+import { generateWorkerMessageHandler, generateRows } from './App-helpers';
 
-// serve ES6+ worker if browser supports modules, ES5 worker if it doesn't
-const testScript = document.createElement('script');
-const workerFilename = ('noModule' in testScript) ? 'js/worker.js' : 'js/es5-worker.js';
-const worker = new Worker(workerFilename);
 
-// constants and refs (should only be declared once, so outside component)
-const clearedBoardArray = Array.from({ length: 81 }, () => '0');
-const clearedSolutionArray = Array.from({ length: 81 }, () => 0);
+// constants
+const CLEARED_BOARD_ARRAY = Array.from({ length: 81 }, () => '0');
+const CLEARED_SOLUTION_ARRAY = Array.from({ length: 81 }, () => 0);
 
+// refs
 const cellInputRefs = Array.from({ length: 81 }, () => createRef());
-
 const solveButtonRef = createRef();
+const refs = { cellInputRefs, solveButtonRef };
 
 
 export const App = () => {
-  const [boardArray, setBoardArray] = useState(clearedBoardArray);
-  const [solutionArray, setSolutionArray] = useState(clearedSolutionArray);
+  const [boardArray, setBoardArray] = useState(CLEARED_BOARD_ARRAY);
+  const [solutionArray, setSolutionArray] = useState(CLEARED_SOLUTION_ARRAY);
   const [status, setStatus] = useState('ready'); // can be: ready, cleared, solving, solved, invalid
 
+  const state = { boardArray, solutionArray, status };
+  const stateSetters = { setBoardArray, setSolutionArray, setStatus };
+
   useEffect(() => { // on mount, set up worker listener
-    worker.addEventListener('message', event => {
-      if (event.data.solutionArray) {
-        setSolutionArray(event.data.solutionArray);
-        setStatus('solved');
-      } else {
-        setStatus('invalid');
-      }
-    });
+    const messageHandler = generateWorkerMessageHandler(stateSetters);
+    worker.addEventListener('message', messageHandler);
   }, []);
 
   useEffect(() => { // if board was cleared, set status to 'ready'
     setStatus(prevStatus => (prevStatus === 'cleared') ? 'ready' : prevStatus);
   }, [status]);
 
-  const solve = () => {
-    worker.postMessage(boardArray.join(''));
-    setStatus('solving');
+  const clearBoard = () => {
+    setBoardArray(CLEARED_BOARD_ARRAY);
+    setSolutionArray(CLEARED_SOLUTION_ARRAY);
+    setStatus('cleared');
+  };
+
+  const replaceBoardArray = newBoardArray => {
+    setBoardArray(newBoardArray);
+    setStatus('ready');
   };
 
   const updateBoardArray = (index, cellVal) => {
@@ -52,41 +54,14 @@ export const App = () => {
       return newBoardArray;
     });
   };
-
-  const replaceBoardArray = newBoardArray => {
-    setBoardArray(newBoardArray);
-    setStatus('ready');
-  };
-
-  const clearBoard = () => {
-    setBoardArray(clearedBoardArray);
-    setSolutionArray(clearedSolutionArray);
-    setStatus('cleared');
-  };
   
-  const rows = Array.from({ length: 9 }, (_el, rowNum) => {
-    const cells = Array.from({ length: 9 }, (_el, colNum) => {
-      const cellNum = (rowNum * 9) + colNum;
-      return (
-        <Cell
-          key={cellNum.toString()}
-          cellNum={cellNum}
-          boardVal={boardArray[cellNum]}
-          solutionVal={solutionArray[cellNum].toString()}
-          status={status}
-          cellInputRefs={cellInputRefs}
-          solve={solve}
-          solveButtonRef={solveButtonRef}
-          updateBoardArray={updateBoardArray}
-        />
-      );
-    });
-    return (   
-      <tr key={rowNum.toString() /* index as key is ok (no IDs, order stable) */ }>
-        {cells}
-      </tr>
-    );
-  });
+  const solve = () => {
+    worker.postMessage(boardArray.join(''));
+    setStatus('solving');
+  };
+
+  const CellProps = { ...state, ...refs, updateBoardArray };
+  const rows = generateRows({ ...CellProps, Cell });
 
   return (
     <>
