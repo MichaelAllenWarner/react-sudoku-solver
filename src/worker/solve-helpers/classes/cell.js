@@ -2,7 +2,7 @@ export class Cell {
   constructor(id, val) {
     this.id = id;
     this.val = val || null;
-    this.possVals = (val) ? [] : Array.from({ length: 9 }, (_el, ind) => ind + 1);
+    this.possVals = val ? [] : Array.from({ length: 9 }, (_el, ind) => ind + 1);
     this.isAccountedForInGroupTakenNums = false;
   }
 
@@ -19,13 +19,13 @@ export class Cell {
   }
 
   moveLastRemainingPossValToVal() {
-    if (!this.val && this.possVals.length === 1) {
+    if (this.possVals.length === 1 && !this.val) {
       this.val = this.possVals[0];
       this.possVals.pop();
     }
   }
   
-  hasNoPossValsLeft() { // indicates a contradiction / invalid board
-    return !this.val && this.possVals.length === 0;
+  hasNoValAndNoPossValsLeft() { // indicates a contradiction / invalid board
+    return !this.val && !this.possVals.length;
   }
 }

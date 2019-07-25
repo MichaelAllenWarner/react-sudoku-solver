@@ -1,6 +1,6 @@
 export const thereIsAContradiction = (cells, groups) => {
   for (const cell of cells) {
-    if (cell.hasNoPossValsLeft()) {
+    if (cell.hasNoValAndNoPossValsLeft()) {
       return true;
     }
   }

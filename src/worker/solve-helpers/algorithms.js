@@ -1,22 +1,4 @@
-export const exhaustHumanTechniques = (cells, groups) => {
-  let changesWereMade;
-
-  do {
-    const valsWereAdded = addValsToTakenNums(cells, groups);
-    const takenNumsWereRemoved = removeTakenNumsFromPossVals(cells, groups);
-    const uniquesWereMadeVals = makeUniquePossValsCellVals(cells, groups);
-  
-    changesWereMade = valsWereAdded || takenNumsWereRemoved || uniquesWereMadeVals;
-  
-    if (changesWereMade) {
-      for (const cell of cells) {
-        cell.moveLastRemainingPossValToVal();
-      }
-    }
-  } while (changesWereMade);
-};
-
-function addValsToTakenNums (cells, groups) {
+export const addValsToTakenNums = (cells, groups) => {
   const groupAndCellValPairs = [];
 
   for (const cell of cells) {
@@ -41,9 +23,9 @@ function addValsToTakenNums (cells, groups) {
   }
 
   return !!groupAndCellValPairs.length;
-}
+};
 
-function removeTakenNumsFromPossVals(cells, groups) {
+export const removeTakenNumsFromPossVals = (cells, groups) => {
   const cellAndTakenNumPairs = [];
 
   for (const cell of cells) {
@@ -53,12 +35,12 @@ function removeTakenNumsFromPossVals(cells, groups) {
 
     const groupContainsCellAndHasTakenNums = group =>
       cell[group.groupType]() === group.num
-      && group.takenNums.length > 0;
+      && !!group.takenNums.length;
 
     const pushCellAndTakenNums = group => {
       for (const takenNum of group.takenNums) {
         if (cell.possVals.includes(takenNum)) {
-          cellAndTakenNumPairs.push([cell, takenNum]);
+          cellAndTakenNumPairs.push([cell, takenNum]); // duplicates can occur!
         }
       }
     };
@@ -76,9 +58,9 @@ function removeTakenNumsFromPossVals(cells, groups) {
   }
 
   return !!cellAndTakenNumPairs.length;
-}
+};
 
-function makeUniquePossValsCellVals(cells, groups) {
+export const makeUniquePossValsCellVals = (cells, groups) => {
   const cellAndUniqueValPairs = [];
 
   for (const group of groups) {
@@ -111,4 +93,4 @@ function makeUniquePossValsCellVals(cells, groups) {
   }
 
   return !!cellAndUniqueValPairs.length;
-}
+};

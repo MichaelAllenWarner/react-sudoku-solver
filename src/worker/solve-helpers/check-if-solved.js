@@ -1,1 +1,1 @@
-export const isSolution = board => !board.includes(0);
+export const isSolution = puzzleProgress => !puzzleProgress.includes(0);
