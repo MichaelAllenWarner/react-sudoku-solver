@@ -1,6 +1,6 @@
 export class Group {
-  constructor(groupType, num) {
-    this.groupType = groupType;
+  constructor(type, num) {
+    this.type = type; // row, col, or box
     this.num = num;
     this.takenNums = [];
   }

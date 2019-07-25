@@ -8,7 +8,7 @@ export const addValsToTakenNums = (cells, groups) => {
 
     cell.isAccountedForInGroupTakenNums = true;
 
-    const groupContainsCell = group => cell[group.groupType]() === group.num;
+    const groupContainsCell = group => cell[group.type]() === group.num;
     const pushGroupAndVal = group => {
       groupAndCellValPairs.push([group, cell.val]);
     };
@@ -34,7 +34,7 @@ export const removeTakenNumsFromPossVals = (cells, groups) => {
     }
 
     const groupContainsCellAndHasTakenNums = group =>
-      cell[group.groupType]() === group.num
+      cell[group.type]() === group.num
       && !!group.takenNums.length;
 
     const pushCellAndTakenNums = group => {
@@ -67,7 +67,7 @@ export const makeUniquePossValsCellVals = (cells, groups) => {
     const cellsInGroup = [];
     const possValsInGroup = [];
 
-    const cellIsInGroup = cell => cell[group.groupType]() === group.num;
+    const cellIsInGroup = cell => cell[group.type]() === group.num;
     const pushCellAndPossValsToGroupArrays = cell => {
       cellsInGroup.push(cell);
       Array.prototype.push.apply(possValsInGroup, cell.possVals);
