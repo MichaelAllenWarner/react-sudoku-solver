@@ -1,7 +1,6 @@
 import { makeCellObjArray, makeGroupObjArray } from './obj-arr-makers';
 import { exhaustAlgorithms } from './exhaust-algorithms';
 import { thereIsAContradiction } from './find-contradictions';
-import { chooseGuessingCell } from './choose-guessing-cell';
 
 export const tryWithoutGuessing = puzzle => {
   const cells = makeCellObjArray(puzzle);
@@ -9,9 +8,7 @@ export const tryWithoutGuessing = puzzle => {
 
   exhaustAlgorithms(cells, groups);
 
-  const [puzzleProgress, guessingCell] = thereIsAContradiction(cells, groups)
-    ? []
-    : [cells.map(cell => cell.val || 0), chooseGuessingCell(cells)];
-
-  return { puzzleProgress, guessingCell };
+  return thereIsAContradiction(cells, groups)
+    ? {}
+    : { board: cells.map(cell => cell.val || 0), cells };
 };
