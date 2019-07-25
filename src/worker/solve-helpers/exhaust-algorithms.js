@@ -1,10 +1,14 @@
+import { makeCellObjArray, makeGroupObjArray } from './obj-arr-makers';
 import {
   addValsToTakenNums,
   removeTakenNumsFromPossVals,
   makeUniquePossValsCellVals
 } from './algorithms';
 
-export const exhaustAlgorithms = (cells, groups) => {
+export const exhaustAlgorithms = puzzle => {
+  const cells = makeCellObjArray(puzzle);
+  const groups = makeGroupObjArray();
+
   let changesWereMade;
 
   do {
@@ -20,4 +24,6 @@ export const exhaustAlgorithms = (cells, groups) => {
       }
     }
   } while (changesWereMade);
+
+  return { cells, groups };
 };
