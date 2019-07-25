@@ -1,21 +1,20 @@
 // choose a cell with no value and with fewest possVals left (2 is ideal)
 
-export default cellObjArray => {
+export const chooseGuessingCell = cells => {
   let guessingCell;
 
-  for (const cellObj of cellObjArray) {
-
-    if (cellObj.val) {
+  for (const cell of cells) {
+    if (cell.val) {
       continue;
     }
 
-    if (cellObj.possVals.length === 2) {
-      guessingCell = cellObj;
+    if (cell.possVals.length === 2) {
+      guessingCell = cell;
       break;
     }
 
-    if (!guessingCell || cellObj.possVals.length < guessingCell.possVals.length) {
-      guessingCell = cellObj;
+    if (!guessingCell || cell.possVals.length < guessingCell.possVals.length) {
+      guessingCell = cell;
     }
   }
 

@@ -1,16 +1,15 @@
-import Cell from './classes/cell';
-import Group from './classes/group';
+import { Cell } from './classes/cell';
+import { Group } from './classes/group';
 
-export function makeCellObjArray(boardString) {
+export const makeCellObjArray = puzzle => {
   const cellObjArray = [];
-  const boardArray = boardString.split('');
-  for (const [index, value] of boardArray.entries()) {
+  for (const [index, value] of puzzle.entries()) {
     cellObjArray.push(new Cell(index, +value));
   }
   return cellObjArray;
-}
+};
 
-export function makeGroupObjArray() {
+export const makeGroupObjArray = () => {
   const groupObjArray = [];
   for (let num = 0; num < 9; num++) {
     groupObjArray.push(new Group('row', num));
@@ -18,4 +17,4 @@ export function makeGroupObjArray() {
     groupObjArray.push(new Group('box', num));
   }
   return groupObjArray;
-}
+};

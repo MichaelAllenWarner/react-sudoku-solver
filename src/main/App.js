@@ -56,7 +56,7 @@ export const App = () => {
   };
   
   const solve = () => {
-    worker.postMessage(boardArray.join(''));
+    worker.postMessage(boardArray);
     setStatus('solving');
   };
 

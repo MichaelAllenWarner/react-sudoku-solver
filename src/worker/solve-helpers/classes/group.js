@@ -1,11 +1,11 @@
-export default class Group {
+export class Group {
   constructor(groupType, num) {
     this.groupType = groupType;
     this.num = num;
     this.takenNums = [];
   }
   
-  checkForDuplicates() { // indicates a contradiction / invalid board
+  hasDuplicates() { // indicates a contradiction / invalid board
     const numIsDuplicated = (num, _ind, arr) => arr.indexOf(num) !== arr.lastIndexOf(num);
     return this.takenNums.some(numIsDuplicated);
   }

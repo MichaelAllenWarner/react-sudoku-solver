@@ -1,24 +1,17 @@
-import {
-  addValsToTakenNums,
-  removeTakenNumsFromPossVals,
-  makeUniquePossValsCellVals
-} from './human-techniques';
+import { makeCellObjArray, makeGroupObjArray } from './obj-arr-makers';
+import { exhaustHumanTechniques } from './human-techniques';
+import { thereIsAContradiction } from './find-contradictions';
+import { chooseGuessingCell } from './choose-guessing-cell';
 
-export default (cellObjArray, groupObjArray) => {
+export const tryHumanTechniques = puzzle => {
+  const cells = makeCellObjArray(puzzle);
+  const groups = makeGroupObjArray();
 
-  let changesWereMade;
+  exhaustHumanTechniques(cells, groups);
 
-  do {
-    const valsWereAdded = addValsToTakenNums(cellObjArray, groupObjArray);
-    const takenNumsWereRemoved = removeTakenNumsFromPossVals(cellObjArray, groupObjArray);
-    const uniquesWereMadeVals = makeUniquePossValsCellVals(cellObjArray, groupObjArray);
+  const [puzzleProgress, guessingCell] = (thereIsAContradiction(cells, groups))
+    ? [null, null]
+    : [cells.map(cell => cell.val || 0), chooseGuessingCell(cells)];
 
-    changesWereMade = valsWereAdded || takenNumsWereRemoved || uniquesWereMadeVals;
-
-    if (changesWereMade) {
-      for (const cellObj of cellObjArray) {
-        cellObj.moveLastRemainingPossValToVal();
-      }
-    }
-  } while (changesWereMade);
+  return { puzzleProgress, guessingCell };
 };

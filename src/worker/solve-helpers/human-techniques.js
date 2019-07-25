@@ -1,90 +1,103 @@
-export { addValsToTakenNums, removeTakenNumsFromPossVals, makeUniquePossValsCellVals };
+export const exhaustHumanTechniques = (cells, groups) => {
+  let changesWereMade;
 
-function addValsToTakenNums(cellObjArray, groupObjArray) {
+  do {
+    const valsWereAdded = addValsToTakenNums(cells, groups);
+    const takenNumsWereRemoved = removeTakenNumsFromPossVals(cells, groups);
+    const uniquesWereMadeVals = makeUniquePossValsCellVals(cells, groups);
+  
+    changesWereMade = valsWereAdded || takenNumsWereRemoved || uniquesWereMadeVals;
+  
+    if (changesWereMade) {
+      for (const cell of cells) {
+        cell.moveLastRemainingPossValToVal();
+      }
+    }
+  } while (changesWereMade);
+};
+
+function addValsToTakenNums (cells, groups) {
   const groupAndCellValPairs = [];
 
-  for (const cellObj of cellObjArray) {
-
-    if (!cellObj.val || cellObj.isAccountedForInGroupTakenNums) {
+  for (const cell of cells) {
+    if (!cell.val || cell.isAccountedForInGroupTakenNums) {
       continue;
     }
 
-    cellObj.isAccountedForInGroupTakenNums = true;
+    cell.isAccountedForInGroupTakenNums = true;
 
-    const groupContainsCell = groupObj => cellObj[groupObj.groupType]() === groupObj.num;
-    const pushGroupAndVal = groupObj => {
-      groupAndCellValPairs.push([groupObj, cellObj.val]);
+    const groupContainsCell = group => cell[group.groupType]() === group.num;
+    const pushGroupAndVal = group => {
+      groupAndCellValPairs.push([group, cell.val]);
     };
 
-    groupObjArray
+    groups
       .filter(groupContainsCell)
       .forEach(pushGroupAndVal);
   }
 
-  for (const [groupObj, val] of groupAndCellValPairs) {
-    groupObj.takenNums.push(val);
+  for (const [group, val] of groupAndCellValPairs) {
+    group.takenNums.push(val);
   }
 
   return !!groupAndCellValPairs.length;
 }
 
-function removeTakenNumsFromPossVals(cellObjArray, groupObjArray) {
+function removeTakenNumsFromPossVals(cells, groups) {
   const cellAndTakenNumPairs = [];
 
-  for (const cellObj of cellObjArray) {
-
-    if (cellObj.val) {
+  for (const cell of cells) {
+    if (cell.val) {
       continue;
     }
 
-    const groupContainsCellAndHasTakenNums = groupObj =>
-      cellObj[groupObj.groupType]() === groupObj.num
-      && groupObj.takenNums.length > 0;
+    const groupContainsCellAndHasTakenNums = group =>
+      cell[group.groupType]() === group.num
+      && group.takenNums.length > 0;
 
-    const pushCellAndTakenNums = groupObj => {
-      for (const takenNum of groupObj.takenNums) {
-        if (cellObj.possVals.includes(takenNum)) {
-          cellAndTakenNumPairs.push([cellObj, takenNum]);
+    const pushCellAndTakenNums = group => {
+      for (const takenNum of group.takenNums) {
+        if (cell.possVals.includes(takenNum)) {
+          cellAndTakenNumPairs.push([cell, takenNum]);
         }
       }
     };
 
-    groupObjArray
+    groups
       .filter(groupContainsCellAndHasTakenNums)
       .forEach(pushCellAndTakenNums);
   }
 
-  for (const [cellObj, number] of cellAndTakenNumPairs) {
-    const index = cellObj.possVals.indexOf(number);
+  for (const [cell, number] of cellAndTakenNumPairs) {
+    const index = cell.possVals.indexOf(number);
     if (index !== -1) { // in case of duplicates in cellAndTakenNumPairs
-      cellObj.possVals.splice(index, 1);
+      cell.possVals.splice(index, 1);
     }
   }
 
   return !!cellAndTakenNumPairs.length;
 }
 
-function makeUniquePossValsCellVals(cellObjArray, groupObjArray) {
+function makeUniquePossValsCellVals(cells, groups) {
   const cellAndUniqueValPairs = [];
 
-  for (const groupObj of groupObjArray) {
-
+  for (const group of groups) {
     const cellsInGroup = [];
     const possValsInGroup = [];
 
-    const cellIsInGroup = cellObj => cellObj[groupObj.groupType]() === groupObj.num;
-    const pushCellAndPossValsToGroupArrays = cellObj => {
-      cellsInGroup.push(cellObj);
-      Array.prototype.push.apply(possValsInGroup, cellObj.possVals);
+    const cellIsInGroup = cell => cell[group.groupType]() === group.num;
+    const pushCellAndPossValsToGroupArrays = cell => {
+      cellsInGroup.push(cell);
+      Array.prototype.push.apply(possValsInGroup, cell.possVals);
     };
 
-    cellObjArray
+    cells
       .filter(cellIsInGroup)
       .forEach(pushCellAndPossValsToGroupArrays);
 
     const possValIsUniqueInGroup = (val, _ind, arr) => arr.indexOf(val) === arr.lastIndexOf(val);
     const pushUniqueValAndItsCell = val => {
-      const cellWithUniquePossVal = cellsInGroup.find(cellObj => cellObj.possVals.includes(val));
+      const cellWithUniquePossVal = cellsInGroup.find(cell => cell.possVals.includes(val));
       cellAndUniqueValPairs.push([cellWithUniquePossVal, val]);
     };
 
@@ -93,8 +106,8 @@ function makeUniquePossValsCellVals(cellObjArray, groupObjArray) {
       .forEach(pushUniqueValAndItsCell);
   }
 
-  for (const [cellObj, uniquePossVal] of cellAndUniqueValPairs) {
-    cellObj.possVals = [uniquePossVal];
+  for (const [cell, uniquePossVal] of cellAndUniqueValPairs) {
+    cell.possVals = [uniquePossVal];
   }
 
   return !!cellAndUniqueValPairs.length;

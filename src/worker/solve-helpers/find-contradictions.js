@@ -1,12 +1,12 @@
-export default (cellObjArray, groupObjArray) => {
-  for (const cellObj of cellObjArray) {
-    if (cellObj.checkForNoPossValsLeft()) {
+export const thereIsAContradiction = (cells, groups) => {
+  for (const cell of cells) {
+    if (cell.hasNoPossValsLeft()) {
       return true;
     }
   }
 
-  for (const groupObj of groupObjArray) {
-    if (groupObj.checkForDuplicates()) {
+  for (const group of groups) {
+    if (group.hasDuplicates()) {
       return true;
     }
   }

@@ -1,4 +1,4 @@
-export default class Cell {
+export class Cell {
   constructor(id, val) {
     this.id = id;
     this.val = val || null;
@@ -25,7 +25,7 @@ export default class Cell {
     }
   }
   
-  checkForNoPossValsLeft() { // indicates a contradiction / invalid board
+  hasNoPossValsLeft() { // indicates a contradiction / invalid board
     return !this.val && this.possVals.length === 0;
   }
 }
