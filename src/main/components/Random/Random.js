@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Random = props => {
+const Random = ({ clear, replaceBoard, status }) => {
   const handleClick = () => {
-    props.clearBoard();
+    clear();
     fetch('/api/puzzles')
       .then(res => res.json())
       .then(data => {
         const newBoard = data.board.split('');
-        props.replaceBoardArray(newBoard);
+        replaceBoard(newBoard);
       })
       .catch(err => alert(err));
   };
@@ -16,7 +16,7 @@ const Random = props => {
   return (
     <button
       onClick={handleClick}
-      disabled={props.status === 'solving'}  
+      disabled={status === 'solving'}  
     >
       Random Puzzle
     </button>
@@ -24,8 +24,8 @@ const Random = props => {
 };
 
 Random.propTypes = {
-  clearBoard: PropTypes.func.isRequired,
-  replaceBoardArray: PropTypes.func.isRequired,
+  clear: PropTypes.func.isRequired,
+  replaceBoard: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired
 };
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Solution = props => {
-  const value = (props.status === 'solved')
-    ? props.solutionArray.join('')
-    : (props.status === 'invalid')
+const Solution = ({ status, solution }) => {
+  const value = (status === 'solved')
+    ? solution.join('')
+    : (status === 'invalid')
       ? 'Invalid puzzle.'
-      : (props.status === 'solving')
+      : (status === 'solving')
         ? 'Solving ...'
         : '';
 
@@ -24,7 +24,7 @@ const Solution = props => {
 
 Solution.propTypes = {
   status: PropTypes.string.isRequired,
-  solutionArray: PropTypes.arrayOf(PropTypes.number).isRequired
+  solution: PropTypes.arrayOf(PropTypes.number).isRequired
 };
 
 export { Solution };

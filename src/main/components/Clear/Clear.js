@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Clear = props => (
+const Clear = ({ clear, status }) => (
   <button
-    onClick={props.clearBoard}
-    disabled={props.status === 'solving'}  
+    onClick={clear}
+    disabled={status === 'solving'}  
   >
     Clear
   </button>
 );
 
 Clear.propTypes = {
-  clearBoard: PropTypes.func.isRequired,
+  clear: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired
 };
 

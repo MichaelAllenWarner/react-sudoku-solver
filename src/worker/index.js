@@ -1,6 +1,6 @@
 import { solve } from './solve.js';
 
 onmessage = event => {
-  const solutionArray = solve(event.data);
-  postMessage({ solutionArray });
+  const solution = solve(event.data);
+  postMessage({ solution });
 };

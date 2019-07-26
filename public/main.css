@@ -70,7 +70,7 @@ button[disabled] {
   color: darkgray;
 }
 
-#divBelowBoard {
+#belowBoard {
   text-align: center;
   display: grid;
 }
