@@ -1,5 +1,7 @@
 const path = require('path');
 const MiniCssExtractsPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 // Bundle-specific Babel options:
 
@@ -168,5 +170,20 @@ module.exports = [
         }
       ]
     }
+  },
+
+  // HTML w/ nomodule-detector.js (CSS called already in HTML template)
+  {
+    entry: './src/nomodule-detector.js',
+    output: {
+      filename: 'js/nomodule-detector.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: './src/index.html'
+      })
+    ]
   }
 ];
