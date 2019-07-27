@@ -24,7 +24,7 @@
   border-right-width: 2px;
 }
 
-.cellInput {
+.cell input {
   height: 100%;
   width: 100%;
   border: none;
@@ -34,11 +34,10 @@
   text-align: center;
 }
 
-.cellInput:focus {
+.cell input:focus {
   outline: 2px solid dodgerblue;
 }
 
 .solvedInput {
-  composes: cellInput;
   color: darkgray;
 }

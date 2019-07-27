@@ -102,7 +102,7 @@ export const determineCellClass = (cellNum, styles) => {
   const rowClass = (rowClassHelper === 0) ? styles.top : (rowClassHelper === 2) ? styles.bottom : '';
   const colClass = (colClassHelper === 0) ? styles.left : (colClassHelper === 2) ? styles.right : '';
 
-  return `${rowClass} ${colClass}`;
+  return `${styles.cell} ${rowClass} ${colClass}`;
 };
 
 export const determineValue = ({ status, solutionVal, boardVal }) => {
@@ -119,7 +119,6 @@ export const determineInputClass = ({ status, solutionVal, boardVal }, styles) =
   if (status === 'solved' && solutionVal !== boardVal) {
     return styles.solvedInput;
   }
-  return styles.cellInput;
 };
 
 export const determineIfReadOnly = status => (
