@@ -48,7 +48,7 @@ module.exports = [
   {
     entry: './src/main/es5-index.js',
     output: {
-      filename: './js/es5-main.js',
+      filename: 'js/es5-main.js',
       path: path.resolve(__dirname, 'public'),
       publicPath: '/'
     },
@@ -91,8 +91,9 @@ module.exports = [
   {
     entry: './src/worker/index.js',
     output: {
-      filename: 'es5-worker.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: 'js/es5-worker.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
     module: {
       rules: [
@@ -112,7 +113,7 @@ module.exports = [
   {
     entry: './src/main/index.js',
     output: {
-      filename: './js/main.js',
+      filename: 'js/main.js',
       path: path.resolve(__dirname, 'public'),
       publicPath: '/'
     },
@@ -155,8 +156,9 @@ module.exports = [
   {
     entry: './src/worker/index.js',
     output: {
-      filename: 'worker.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: 'js/worker.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
     module: {
       rules: [
