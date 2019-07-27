@@ -10,6 +10,7 @@ import {
   determineIfReadOnly,
   shouldSkipUpdate
 } from './Cell-helpers';
+import styles from './Cell-styles.css';
 
 const UnmemoizedCell = props => {  
   const handleKeyUp = event => {
@@ -25,11 +26,11 @@ const UnmemoizedCell = props => {
   };
 
   return (
-    <td className={determineCellClass(props.cellNum)}>
+    <td className={determineCellClass(props.cellNum, styles)}>
       <input
         ref={props.cellInputRefs[props.cellNum]}
         value={determineValue(props)}
-        className={determineInputClass(props)}
+        className={determineInputClass(props, styles)}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}

@@ -15,6 +15,7 @@ import {
   _solve,
   generateRows
 } from './App-helpers';
+import styles from './App-styles.css';
 
 
 const FRESH_BOARD = Array.from({ length: 81 }, () => '0');
@@ -68,10 +69,12 @@ export const App = () => {
 
   return (
     <>
-      <h1>Mike’s Sudoku Solver</h1>
-      <table><tbody>{rows}</tbody></table>
-      <div id="belowBoard">
-        <div id="buttons">
+      <h1 className={styles.header}>Mike’s Sudoku Solver</h1>
+      <table className={styles.board}>
+        <tbody>{rows}</tbody>
+      </table>
+      <div className={styles.belowBoard}>
+        <div className={styles.buttons}>
           <Solve {...SolveProps}/>
           <Clear {...ClearProps}/>
           <Random {...RandomProps}/>

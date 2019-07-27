@@ -1,0 +1,44 @@
+.cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+}
+
+.top {
+  composes: cell;
+  border-top-width: 2px;
+}
+
+.bottom {
+  composes: cell;
+  border-bottom-width: 2px;
+}
+
+.left {
+  composes: cell;
+  border-left-width: 2px;
+}
+
+.right{
+  composes: cell;
+  border-right-width: 2px;
+}
+
+.cellInput {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0;
+  font-size: 27px;
+  text-align: center;
+}
+
+.cellInput:focus {
+  outline: 2px solid dodgerblue;
+}
+
+.solvedInput {
+  composes: cellInput;
+  color: darkgray;
+}

@@ -28,7 +28,6 @@ const StringEntry = props => {
   return (
     <div>
       <input
-        id="stringEntry"
         placeholder="81-digit string entry (anything not 1&ndash;9 is a blank)."
         ref={stringEntryRef}
         value={value}

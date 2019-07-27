@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractsPlugin = require('mini-css-extract-plugin');
 
 // Bundle-specific Babel options:
 
@@ -47,18 +48,40 @@ module.exports = [
   {
     entry: './src/main/es5-index.js',
     output: {
-      filename: 'es5-main.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: './js/es5-main.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
+    plugins: [
+      new MiniCssExtractsPlugin({
+        filename: 'css/[name].css'
+      })
+    ],
     module: {
       rules: [
         {
-          test: /\.m?js$/,
+          test: /\.js$/,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             options: es5MainBabelOptions
           }
+        },
+        {
+          test: /\.css$/,
+          use: [
+            {
+              loader: MiniCssExtractsPlugin.loader
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName: '[name]__[local]___[hash:base64:5]'
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -68,13 +91,14 @@ module.exports = [
   {
     entry: './src/worker/index.js',
     output: {
-      filename: 'es5-worker.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: './js/es5-worker.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
     module: {
       rules: [
         {
-          test: /\.m?js$/,
+          test: /\.js$/,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
@@ -89,18 +113,40 @@ module.exports = [
   {
     entry: './src/main/index.js',
     output: {
-      filename: 'main.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: './js/main.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
+    plugins: [
+      new MiniCssExtractsPlugin({
+        filename: 'css/[name].css'
+      })
+    ],
     module: {
       rules: [
         {
-          test: /\.m?js$/,
+          test: /\.js$/,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             options: es6MainBabelOptions
           }
+        },
+        {
+          test: /\.css$/,
+          use: [
+            {
+              loader: MiniCssExtractsPlugin.loader
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName: '[name]__[local]___[hash:base64:5]'
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -110,13 +156,14 @@ module.exports = [
   {
     entry: './src/worker/index.js',
     output: {
-      filename: 'worker.js',
-      path: path.resolve(__dirname, 'public/js')
+      filename: './js/es5-worker.js',
+      path: path.resolve(__dirname, 'public'),
+      publicPath: '/'
     },
     module: {
       rules: [
         {
-          test: /\.m?js$/,
+          test: /\.js$/,
           exclude: /node_modules/
         }
       ]

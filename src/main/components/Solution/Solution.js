@@ -13,7 +13,6 @@ const Solution = ({ status, solution }) => {
   return (
     <div>
       <input
-        id="solution"
         placeholder="Solution string will appear here."
         value={value}
         readOnly={true}
