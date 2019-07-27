@@ -155,7 +155,7 @@ module.exports = [
   {
     entry: './src/worker/index.js',
     output: {
-      filename: 'es5-worker.js',
+      filename: 'worker.js',
       path: path.resolve(__dirname, 'public/js')
     },
     module: {
