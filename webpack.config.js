@@ -1,172 +1,46 @@
-const path = require('path');
-const MiniCssExtractsPlugin = require('mini-css-extract-plugin');
-
-// Bundle-specific Babel options:
-
-// ES5 version of Main bundle uses React (w/ class props) and preset-env (w/ polyfills)
-const es5MainBabelOptions = {
-  plugins: ['@babel/plugin-proposal-class-properties'],
-  presets: [
-    '@babel/preset-react',
-    ['@babel/preset-env', {
-      useBuiltIns: 'usage',
-      corejs: 3,
-      debug: true,
-      targets: {
-        browsers: ['IE >= 10']
-      }
-    }]
-  ]
-};
-
-// ES5 version of Worker bundle gets preset-env w/ polyfills (no React)
-const es5WorkerBabelOptions = {
-  presets: [
-    ['@babel/preset-env', {
-      useBuiltIns: 'usage',
-      corejs: 3,
-      debug: true,
-      targets: {
-        browsers: ['IE >= 10']
-      }
-    }]
-  ]
-};
-
-// ES6+ version of Main bundle uses React w/ class props
-const es6MainBabelOptions = {
-  plugins: ['@babel/plugin-proposal-class-properties'],
-  presets: ['@babel/preset-react']
-};
-
-// (no Babel at all for ES6+ version of Worker bundle)
+const {
+  es5Main,
+  es5Worker,
+  es6Main,
+  es6Worker
+} = require('./webpack-helpers/base-bundles');
+const {
+  devCssRule,
+  prodCssPlugin,
+  prodHtmlPlugins,
+  prodCssRule
+} = require('./webpack-helpers/css-helpers');
 
 
 module.exports = [
-
-  // ES5 version of Main bundle
-  {
-    entry: './src/main/es5-index.js',
-    output: {
-      filename: 'js/es5-main.js',
-      path: path.resolve(__dirname, 'public'),
-      publicPath: '/'
-    },
-    plugins: [
-      new MiniCssExtractsPlugin({
-        filename: 'css/[name].css'
-      })
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: es5MainBabelOptions
-          }
-        },
-        {
-          test: /\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractsPlugin.loader
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: {
-                  localIdentName: '[name]__[local]___[hash:base64:5]'
-                }
-              }
-            }
-          ]
-        }
-      ]
-    }
-  },
-
-  // ES5 version of Worker bundle
-  {
-    entry: './src/worker/index.js',
-    output: {
-      filename: 'js/es5-worker.js',
-      path: path.resolve(__dirname, 'public'),
-      publicPath: '/'
-    },
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: es5WorkerBabelOptions
-          }
-        }
-      ]
-    }
-  },
-
   // ES6+ version of Main bundle
-  {
-    entry: './src/main/index.js',
-    output: {
-      filename: 'js/main.js',
-      path: path.resolve(__dirname, 'public'),
-      publicPath: '/'
-    },
-    plugins: [
-      new MiniCssExtractsPlugin({
-        filename: 'css/[name].css'
-      })
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: es6MainBabelOptions
-          }
-        },
-        {
-          test: /\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractsPlugin.loader
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: {
-                  localIdentName: '[name]__[local]___[hash:base64:5]'
-                }
-              }
-            }
-          ]
-        }
-      ]
+  (_env, argv) => {
+    if (argv.mode === 'development') {
+      es6Main.module.rules.push(devCssRule);
     }
+    if (argv.mode === 'production') {
+      es6Main.plugins.push(prodCssPlugin); // overwrites identical CSS file from es5Main (ok)
+      Array.prototype.push.apply(es6Main.plugins, prodHtmlPlugins); // only in 1 bundle
+      es6Main.module.rules.push(prodCssRule);
+    }
+    return es6Main;
   },
 
   // ES6+ version of Worker bundle
-  {
-    entry: './src/worker/index.js',
-    output: {
-      filename: 'js/worker.js',
-      path: path.resolve(__dirname, 'public'),
-      publicPath: '/'
-    },
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/
-        }
-      ]
+  () => es6Worker,
+
+  // ES5 version of Main bundle
+  (_env, argv) => {
+    if (argv.mode === 'development') {
+      es5Main.module.rules.push(devCssRule);
     }
-  }
+    if (argv.mode === 'production') {
+      es5Main.plugins.push(prodCssPlugin);
+      es5Main.module.rules.push(prodCssRule);
+    }
+    return es5Main;
+  },
+
+  // ES5 version of Worker bundle
+  () => es5Worker
 ];
