@@ -8,7 +8,7 @@
   "main": "server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -p",
+    "build": "webpack -p && cp src/index.html public/index.html",
     "start": "node --experimental-modules --require dotenv/config server/server.js"
   },
   "type": "module",
