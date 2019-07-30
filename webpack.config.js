@@ -1,8 +1,6 @@
 const {
   es5Main,
-  es5Worker,
-  es6Main,
-  es6Worker
+  es6Main
 } = require('./webpack-helpers/base-bundles');
 const {
   devCssRule,
@@ -13,34 +11,29 @@ const {
 
 
 module.exports = [
-  // ES6+ version of Main bundle
+  // ES6+ version
   (_env, argv) => {
     if (argv.mode === 'development') {
       es6Main.module.rules.push(devCssRule);
+      es6Main.output.globalObject = 'this'; // fixes 'window is not defined' error in dev server
     }
     if (argv.mode === 'production') {
-      es6Main.plugins.push(prodCssPlugin); // overwrites identical CSS file from es5Main (ok)
-      Array.prototype.push.apply(es6Main.plugins, prodHtmlPlugins); // only in 1 bundle
+      es6Main.plugins.push(prodCssPlugin, ...prodHtmlPlugins); // prodHtmlPlugins only for 1 bundle
       es6Main.module.rules.push(prodCssRule);
     }
     return es6Main;
   },
 
-  // ES6+ version of Worker bundle
-  () => es6Worker,
-
-  // ES5 version of Main bundle
+  // ES5 version
   (_env, argv) => {
     if (argv.mode === 'development') {
       es5Main.module.rules.push(devCssRule);
+      es5Main.output.globalObject = 'this'; // fixes 'window is not defined' error in dev server
     }
     if (argv.mode === 'production') {
-      es5Main.plugins.push(prodCssPlugin);
+      es5Main.plugins.push(prodCssPlugin); // overwrites identical CSS file from es6Main (ok)
       es5Main.module.rules.push(prodCssRule);
     }
     return es5Main;
-  },
-
-  // ES5 version of Worker bundle
-  () => es5Worker
+  }
 ];

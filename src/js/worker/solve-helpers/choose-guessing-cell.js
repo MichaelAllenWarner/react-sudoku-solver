@@ -1,4 +1,6 @@
-// choose a cell with no value and with fewest possVals left (2 is ideal)
+// choose a cell with no value and with fewest possVals left (2 is ideal).
+// Could use sort() or reduce(), but loop w/ continue/break/return is faster.
+// (Does it matter? not sure, but this IS part of our recursive solve function)
 
 export const chooseGuessingCell = cells => {
   let guessingCell;

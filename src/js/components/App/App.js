@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React, { useState, useEffect, createRef } from 'react';
 import { Cell } from '../Cell/Cell';
 import { Solve } from '../Solve/Solve';
@@ -5,7 +6,7 @@ import { Clear } from '../Clear/Clear';
 import { Random } from '../Random/Random';
 import { StringEntry } from '../StringEntry/StringEntry';
 import { Solution } from '../Solution/Solution';
-import { worker } from '../../worker';
+import Worker from '../../worker/solve.worker'; // webpack worker-loader does its magic here
 import {
   setUpWorker,
   readyIfCleared,
@@ -18,6 +19,8 @@ import {
 import styles from './App-styles.css';
 
 
+const worker = new Worker();
+
 const FRESH_BOARD = Array.from({ length: 81 }, () => '0');
 const FRESH_SOLUTION = Array.from({ length: 81 }, () => 0);
 const constants = { FRESH_BOARD, FRESH_SOLUTION };
@@ -27,7 +30,7 @@ const solveButtonRef = createRef();
 const refs = { cellInputRefs, solveButtonRef };
 
 
-export const App = () => {
+const ColdApp = () => {
   const [board, setBoard] = useState(FRESH_BOARD);
   const [solution, setSolution] = useState(FRESH_SOLUTION);
   const [status, setStatus] = useState('ready'); // ready, cleared, solving, solved, invalid
@@ -85,3 +88,7 @@ export const App = () => {
     </>
   );
 };
+
+const App = hot(ColdApp);
+
+export { App };

@@ -1,4 +1,4 @@
-import { solve } from './solve.js';
+import { solve } from './solve';
 
 onmessage = event => {
   const solution = solve(event.data);
