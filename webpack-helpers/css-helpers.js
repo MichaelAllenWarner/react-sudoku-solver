@@ -1,4 +1,4 @@
-const MiniCssExtractsPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackExcludeAssetsPlugin = require('html-webpack-exclude-assets-plugin');
 
@@ -19,7 +19,7 @@ const devCssRule = {
   ]
 };
 
-const prodCssPlugin = new MiniCssExtractsPlugin({
+const prodCssPlugin = new MiniCssExtractPlugin({
   filename: 'css/[name].css'
 });
 
@@ -35,7 +35,7 @@ const prodCssRule = {
   test: /\.css$/,
   use: [
     {
-      loader: MiniCssExtractsPlugin.loader
+      loader: MiniCssExtractPlugin.loader
     },
     {
       loader: 'css-loader',
