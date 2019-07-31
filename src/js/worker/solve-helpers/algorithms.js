@@ -1,3 +1,5 @@
+const cellIsInGroup = (cell, group) => cell[group.type]() === group.num;
+
 export const addValsToTakenNums = (cells, groups) => {
   const cellsReducer = (acc, cell) => {
     if (!cell.val || cell.isAccountedForInGroupTakenNums) {
@@ -5,7 +7,7 @@ export const addValsToTakenNums = (cells, groups) => {
     }
     cell.isAccountedForInGroupTakenNums = true;
     for (const group of groups) {
-      if (cell[group.type]() === group.num) { // (if cell is in group)
+      if (cellIsInGroup(cell, group)) {
         acc.push([group, cell.val]);
       }
     }
@@ -27,8 +29,7 @@ export const removeTakenNumsFromPossVals = (cells, groups) => {
       return acc;
     }
     for (const group of groups) {
-      // skip group if it has no takenNums or doesn't contain the cell
-      if (!group.takenNums.length || cell[group.type]() !== group.num) {
+      if (!cellIsInGroup(cell, group) || !group.takenNums.length) {
         continue;
       }
       for (const takenNum of group.takenNums) {
@@ -55,8 +56,7 @@ export const removeTakenNumsFromPossVals = (cells, groups) => {
 export const makeUniquePossValsCellVals = (cells, groups) => {
   const groupsReducer = (groupsAcc, group) => {
     const cellsReducer = (cellsAcc, cell) => {
-      // skip cell if it's not in group
-      if (cell[group.type]() !== group.num) {
+      if (!cellIsInGroup(cell, group)) {
         return cellsAcc;
       }
       cellsAcc.cellsInGroup.push(cell);
