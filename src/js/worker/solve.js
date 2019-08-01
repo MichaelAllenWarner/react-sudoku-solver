@@ -1,5 +1,5 @@
 import { tryWithoutGuessing } from './solve-helpers/try-without-guessing';
-import { isSolution } from './solve-helpers/check-if-solved';
+import { isSolution } from './solve-helpers/is-solution';
 import { guessAndSolve } from './solve-helpers/guess-and-solve';
 
 export const solve = puzzle => {

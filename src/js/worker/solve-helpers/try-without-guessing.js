@@ -1,5 +1,5 @@
 import { exhaustAlgorithms } from './exhaust-algorithms';
-import { thereIsAContradiction } from './find-contradictions';
+import { thereIsAContradiction } from './there-is-a-contradiction';
 
 export const tryWithoutGuessing = puzzle => {
   const { cells, groups } = exhaustAlgorithms(puzzle);
