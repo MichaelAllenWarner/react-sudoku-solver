@@ -1,5 +1,5 @@
-import { Cell } from './classes/cell';
-import { Group } from './classes/group';
+import { Cell } from './classes/Cell';
+import { Group } from './classes/Group';
 
 export const makeCellObjArray = puzzle => {
   const cellObjArray = [];

@@ -1,8 +1,8 @@
 import { makeCellObjArray, makeGroupObjArray } from './obj-arr-makers';
 import {
-  addValsToTakenNums,
-  removeTakenNumsFromPossVals,
-  makeUniquePossValsCellVals
+  addCellValsToGroupTakenNums,
+  removeGroupTakenNumsFromCellPossVals,
+  solveCellIfHasPossValUniqueToGroup
 } from './algorithms';
 
 export const exhaustAlgorithms = puzzle => {
@@ -12,11 +12,11 @@ export const exhaustAlgorithms = puzzle => {
   let changesWereMade;
 
   do {
-    const valsWereAdded = addValsToTakenNums(cells, groups);
-    const takenNumsWereRemoved = removeTakenNumsFromPossVals(cells, groups);
-    const uniquesWereMadeVals = makeUniquePossValsCellVals(cells, groups);
+    const groupTakenNumsWereUpdated = addCellValsToGroupTakenNums(cells, groups);
+    const cellPossValsWereRuledOut = removeGroupTakenNumsFromCellPossVals(cells, groups);
+    const cellsWereSolved = solveCellIfHasPossValUniqueToGroup(cells, groups);
   
-    changesWereMade = valsWereAdded || takenNumsWereRemoved || uniquesWereMadeVals;
+    changesWereMade = groupTakenNumsWereUpdated || cellPossValsWereRuledOut || cellsWereSolved;
   
     if (changesWereMade) {
       for (const cell of cells) {

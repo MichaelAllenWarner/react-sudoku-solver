@@ -1,11 +1,11 @@
 const cellIsInGroup = (cell, group) => cell[group.type]() === group.num;
 
-export const addValsToTakenNums = (cells, groups) => {
+export const addCellValsToGroupTakenNums = (cells, groups) => {
   const cellsReducer = (acc, cell) => {
-    if (!cell.val || cell.isAccountedForInGroupTakenNums) {
+    if (!cell.val || cell.isAccountedForInGroupTakenNums()) {
       return acc;
     }
-    cell.isAccountedForInGroupTakenNums = true;
+    cell.accountForInGroupTakenNums();
     for (const group of groups) {
       if (cellIsInGroup(cell, group)) {
         acc.push([group, cell.val]);
@@ -17,23 +17,23 @@ export const addValsToTakenNums = (cells, groups) => {
   const groupAndCellValPairs = cells.reduce(cellsReducer, []);
 
   for (const [group, val] of groupAndCellValPairs) {
-    group.takenNums.push(val);
+    group.addCellValToTakenNums(val);
   }
 
   return !!groupAndCellValPairs.length;
 };
 
-export const removeTakenNumsFromPossVals = (cells, groups) => {
+export const removeGroupTakenNumsFromCellPossVals = (cells, groups) => {
   const cellsReducer = (acc, cell) => {
     if (cell.val) {
       return acc;
     }
     for (const group of groups) {
-      if (!cellIsInGroup(cell, group) || !group.takenNums.length) {
+      if (!cellIsInGroup(cell, group) || !group.hasTakenNums()) {
         continue;
       }
       for (const takenNum of group.takenNums) {
-        if (cell.possVals.includes(takenNum)) {
+        if (cell.stillHasAsAPossVal(takenNum)) {
           acc.push([cell, takenNum]); // duplicates can occur!
         }
       }
@@ -44,16 +44,13 @@ export const removeTakenNumsFromPossVals = (cells, groups) => {
   const cellAndTakenNumPairs = cells.reduce(cellsReducer, []);
 
   for (const [cell, takenNum] of cellAndTakenNumPairs) {
-    const index = cell.possVals.indexOf(takenNum);
-    if (index !== -1) { // in case of duplicates in cellAndTakenNumPairs
-      cell.possVals.splice(index, 1);
-    }
+    cell.removeFromPossVals(takenNum); // safe in case of duplicates in cellAndTakenNumPairs
   }
 
   return !!cellAndTakenNumPairs.length;
 };
 
-export const makeUniquePossValsCellVals = (cells, groups) => {
+export const solveCellIfHasPossValUniqueToGroup = (cells, groups) => {
   const groupsReducer = (groupsAcc, group) => {
     const cellsReducer = (cellsAcc, cell) => {
       if (!cellIsInGroup(cell, group)) {
@@ -85,8 +82,8 @@ export const makeUniquePossValsCellVals = (cells, groups) => {
 
   const cellAndUniqueValPairs = groups.reduce(groupsReducer, []);
 
-  for (const [cell, uniquePossVal] of cellAndUniqueValPairs) {
-    cell.possVals = [uniquePossVal];
+  for (const [cell, val] of cellAndUniqueValPairs) {
+    cell.solve(val);
   }
 
   return !!cellAndUniqueValPairs.length;
