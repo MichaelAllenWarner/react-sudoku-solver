@@ -2,8 +2,7 @@
 import 'core-js/es/map';
 import 'core-js/es/set';
 
-// needed for fetch / promise in legacy browsers
-import 'promise-polyfill';
+// needed for Fetch API in legacy browsers
 import 'whatwg-fetch';
 
 import React from 'react';
