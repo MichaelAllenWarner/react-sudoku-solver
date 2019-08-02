@@ -54,11 +54,11 @@ const es5Main = {
     path: path.resolve(__dirname, '../public'),
     publicPath: '/'
   },
-  resolve: {
-    alias: {
-      'react-dom': '@hot-loader/react-dom'
-    }
-  },
+  // resolve: {
+  //   alias: {
+  //     'react-dom': '@hot-loader/react-dom'
+  //   }
+  // },
   plugins: [], // so we can push to it
   module: {
     rules: [
@@ -78,7 +78,7 @@ const es5Main = {
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: ['react-hot-loader/babel'], // needed?
+            // plugins: ['react-hot-loader/babel'],
             presets: [ // ES5 bundle gets preset-react AND preset-env (w/ polyfills)
               '@babel/preset-react',
               ['@babel/preset-env', {
